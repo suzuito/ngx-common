@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -19,7 +18,19 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-mugen-scroll": [
+        "dist/ngx-mugen-scroll/ngx-mugen-scroll",
+        "dist/ngx-mugen-scroll",
+        "dist/ngx-mugen-scroll/ngx-mugen-scroll",
+        "dist/ngx-mugen-scroll"
+      ],
+      "mugen-scroll": [
+        "dist/mugen-scroll/mugen-scroll",
+        "dist/mugen-scroll"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

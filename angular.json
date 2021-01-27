@@ -3,5 +3,49 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "ngx-mugen-scroll": {
+      "projectType": "library",
+      "root": "projects/ngx-mugen-scroll",
+      "sourceRoot": "projects/ngx-mugen-scroll/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/ngx-mugen-scroll/tsconfig.lib.json",
+            "project": "projects/ngx-mugen-scroll/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-mugen-scroll/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-mugen-scroll/src/test.ts",
+            "tsConfig": "projects/ngx-mugen-scroll/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-mugen-scroll/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-mugen-scroll/tsconfig.lib.json",
+              "projects/ngx-mugen-scroll/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "9c6e1751-1af8-48aa-ab70-3dde300e9166"
+  },
+  "defaultProject": "ngx-mugen-scroll"
 }
