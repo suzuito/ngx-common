@@ -1,0 +1,30 @@
+.main {
+    border: 3px solid black;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 60px;
+    right: 60px;
+    top: 60px;
+    bottom: 60px;
+
+    overflow: scroll;
+}
+
+.top {
+    height: 100px;
+}
+
+.bottom {
+    height: 100px;
+}
+
+.data {
+    border: 3px solid black;
+    box-sizing: border-box;
+
+    position: relative;
+
+    padding: 6px;
+}

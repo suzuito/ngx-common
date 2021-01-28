@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'lib-ngx-mugen-scroll',
   template: `
     <p>
-      ngx-mugen-scroll works!
+      ngx-mugen-scroll work1!!!!
     </p>
   `,
   styles: [

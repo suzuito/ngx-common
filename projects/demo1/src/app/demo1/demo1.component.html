@@ -1,0 +1,12 @@
+<div class='main' #parent>
+    <div class='top' #top></div>
+    <div class='data' *ngFor='let data of datas' [attr.key]='key(data)'>
+        <div>
+            {{data.id}}: {{data.name}}
+        </div>
+        <div>
+            {{data.createdAt*1000|date:"full"}}
+        </div>
+    </div>
+    <div class='bottom' #bottom></div>
+</div>
