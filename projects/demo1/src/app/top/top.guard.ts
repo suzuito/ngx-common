@@ -6,22 +6,18 @@ import { Group } from '../group';
 import { GroupProviderServiceImplAsc } from '../group-provider.service';
 import { randomIds } from './random-ids';
 
-
 export async function generateTestGroups(
   base: OrderedDataStoreIdxService,
+  n: number,
 ): Promise<void> {
-  const groups = [];
   const store = new GroupProviderServiceImplAsc(base);
-  for (let i = 0; i < 1000; i++) {
-    const g: Group = {
+  for (let i = 0; i < n; i++) {
+    await store.add({
       id: `group-${i}`,
-      name: `グループ ${i}`,
-    };
-    groups.push(g);
-    await store.add(g);
+      name: `グループ-${i}`,
+    });
   }
 }
-
 
 export async function generateTestDatas(
   base: OrderedDataStoreIdxService,
@@ -32,7 +28,7 @@ export async function generateTestDatas(
   let i = 0;
   const randomDatas = randomIds.map(v => {
     i++;
-    return { id: v, groupId: '', createdAt: now - (Math.random() * 1000), name: `データ ${i}`, };
+    return { id: v, groupId, createdAt: now - (Math.random() * 1000), name: `データ ${i}`, };
   });
   await store.add(
     ...randomDatas,
