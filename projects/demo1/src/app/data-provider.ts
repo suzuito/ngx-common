@@ -17,7 +17,7 @@ export class DataProviderImplAsc implements DataProvider<Data> {
                 name: 'idx1',
                 keyPath: ['createdAt', 'name'],
                 unique: true,
-            }
+            },
         ],
     };
     constructor(
@@ -69,19 +69,4 @@ export class DataProviderImplAsc implements DataProvider<Data> {
     async add(...v: Array<Data>): Promise<void> {
         this.base.add<Data>(DataProviderImplAsc.store.name, ...v);
     }
-}
-
-export async function generateTestDatas(
-    base: OrderedDataStoreIdxService,
-): Promise<void> {
-    const store = new DataProviderImplAsc(base);
-    const now = Date.now() / 1000;
-    let i = 0;
-    const randomDatas = randomIds.map(v => {
-        i++;
-        return { id: v, createdAt: now - (Math.random() * 1000), name: `データ ${i}`, };
-    });
-    await store.add(
-        ...randomDatas,
-    );
 }

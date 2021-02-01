@@ -72,7 +72,7 @@ export class OrderedDataStoreIdxService {
   }
 
 
-  async initDB(version: number, stores: Array<OrderedDataStoreIdxServiceStore>): Promise<void> {
+  async init(version: number, stores: Array<OrderedDataStoreIdxServiceStore>): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const request = this.indexedDB.open(this.dbName, version);
       request.onsuccess = (ev: Event) => {
@@ -110,7 +110,11 @@ export class OrderedDataStoreIdxService {
     });
   }
 
-  async get<T>(storeName: string, key: string, index: string = ''): Promise<T | undefined> {
+  async get<T>(
+    storeName: string,
+    query: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    index: string = '',
+  ): Promise<T | undefined> {
     return new Promise<T>((resolve, reject) => {
       const db = this.validDB();
       const tx = validTx(db, storeName, 'readonly');
@@ -121,7 +125,7 @@ export class OrderedDataStoreIdxService {
       } else {
         idx = store;
       }
-      const r = idx.get(key);
+      const r = idx.get(query);
       r.onsuccess = (ev: Event) => {
         resolve(r.result);
       };
@@ -131,7 +135,11 @@ export class OrderedDataStoreIdxService {
     });
   }
 
-  async delete(storeName: string, key: string, index: string = ''): Promise<void> {
+  async delete(
+    storeName: string,
+    key: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    index: string = '',
+  ): Promise<void> {
     const db = this.validDB();
     const tx = validTx(db, storeName, 'readwrite');
     const store = tx.objectStore(storeName);

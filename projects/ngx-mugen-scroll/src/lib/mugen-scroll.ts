@@ -74,7 +74,6 @@ export class MugenScroll<T> {
 
     constructor(
         private cursorGetter: (v: T) => Cursor,
-        // public key: (v: T) => string,
         private streamProvider: DataProvider<T>,
         private streamCursorStore: CursorStoreService,
         public opt: MugenScrollOption,
@@ -154,7 +153,6 @@ export class MugenScroll<T> {
                         if (!bottomData) {
                             return;
                         }
-                        // this.scrollTo(this.scrollTopAtBottom(this.key(bottomData)));
                         this.scrollTo(this.scrollTopAtBottom(this.cursorGetter(bottomData).toString()));
                         return;
                     }
@@ -183,9 +181,6 @@ export class MugenScroll<T> {
             throw new Error(`topDataBeforeFetch is undefined`);
         }
         await this.streamProvider.fetchTop(this.cursorGetter(topDataBeforeFetch), this.opt.fetchLength, false)
-            // .then(v => new Promise<Array<T>>(resolve => {
-            //     setTimeout(() => resolve(v), this.opt.waitTimeMilliSeconds);
-            // }))
             .then(v => this.addDatasToTop(...v))
             .then(v => {
                 if (v.length <= 0) {
@@ -194,7 +189,6 @@ export class MugenScroll<T> {
                 if (!topDataBeforeFetch) {
                     return;
                 }
-                // this.scrollTo(this.scrollTopAtTop(this.key(topDataBeforeFetch)));
                 this.scrollTo(this.scrollTopAtTop(this.cursorGetter(topDataBeforeFetch).toString()));
             })
             .then(() => new Promise(resolve => {
@@ -217,9 +211,6 @@ export class MugenScroll<T> {
             throw new Error(`bottomDataBeforeFetch is undefined`);
         }
         await this.streamProvider.fetchBottom(this.cursorGetter(bottomDataBeforeFetch), this.opt.fetchLength, false)
-            // .then(v => new Promise<Array<T>>(resolve => {
-            //     setTimeout(() => resolve(v), this.opt.waitTimeMilliSeconds);
-            // }))
             .then(v => this.addDatasToBottom(...v))
             .then(v => {
                 if (v.length <= 0) {
@@ -228,7 +219,6 @@ export class MugenScroll<T> {
                 if (!bottomDataBeforeFetch) {
                     return;
                 }
-                // this.scrollTo(this.scrollTopAtBottom(this.key(bottomDataBeforeFetch)));
                 this.scrollTo(this.scrollTopAtBottom(this.cursorGetter(bottomDataBeforeFetch).toString()));
             })
             .then(() => new Promise(resolve => {
@@ -283,7 +273,6 @@ export class MugenScroll<T> {
 
     public isUpdated(): boolean {
         const d: HTMLElement = def(this.internalElParent);
-        // this.llogger.info(`- ${d}, ${this.dupChecker.size}, ${d.children.length}`);
         let count = 0;
         for (let i = 0; i < d.children.length; i++) {
             const item = d.children.item(i);
@@ -310,20 +299,16 @@ export class MugenScroll<T> {
                     break;
                 }
             }
-            // this.llogger.info((this.eel.nativeElement as HTMLElement).lastElementChild.getAttribute('cursor'));
             if (!ok) {
-                // this.llogger.info(`b false`);
                 return false;
             }
         }
-        // this.llogger.info(`c ${(this.bottomData() as any).createdAt}`);
         return true;
     }
 
     private filterDuplicate(...items: Array<T>): Array<T> {
         const added: Array<T> = [];
         for (const v of items) {
-            // if (this.dupChecker.has(this.key(v))) {
             if (this.dupChecker.has(this.cursorGetter(v).toString())) {
                 continue;
             }
@@ -354,7 +339,6 @@ export class MugenScroll<T> {
         }
         return new Promise<Array<T>>((resolve, reject) => {
             const observer = new MutationObserver((mutations: Array<MutationRecord>) => {
-                // this.llogger.info(...mutations.map(v => ` ${v.addedNodes.length}:${v.removedNodes.length}`));
                 if (!this.isUpdated()) {
                     return;
                 }
@@ -364,7 +348,6 @@ export class MugenScroll<T> {
             });
             observer.observe(def(this.internalElParent), { childList: true });
             this.datas.push(...added);
-            // this.addDuplicate(...added.map(v => this.key(v)));
             this.addDuplicate(...added.map(v => this.cursorGetter(v).toString()));
             if (this.datas.length > this.opt.maxLength) {
                 for (let i = 0; i < this.datas.length - this.opt.maxLength; i++) {
@@ -372,7 +355,6 @@ export class MugenScroll<T> {
                     if (!shifted) {
                         continue;
                     }
-                    // this.removeDuplicate(this.key(shifted));
                     this.removeDuplicate(this.cursorGetter(shifted).toString());
                 }
             }
@@ -389,17 +371,14 @@ export class MugenScroll<T> {
         }
         return new Promise<Array<T>>((resolve, reject) => {
             const observer = new MutationObserver((mutations: Array<MutationRecord>, _) => {
-                // this.llogger.info(...mutations.map(v => ` ${v.addedNodes.length}:${v.removedNodes.length}`));
                 if (!this.isUpdated()) {
                     return;
                 }
-                // this.llogger.info('Updated');
                 observer.disconnect();
                 resolve(added);
             });
             observer.observe(def(this.internalElParent), { childList: true });
             this.datas.unshift(...added);
-            // this.addDuplicate(...added.map(v => this.key(v)));
             this.addDuplicate(...added.map(v => this.cursorGetter(v).toString()));
             if (this.datas.length > this.opt.maxLength) {
                 for (let i = 0; i < this.datas.length - this.opt.maxLength; i++) {
@@ -407,7 +386,6 @@ export class MugenScroll<T> {
                     if (!poped) {
                         continue;
                     }
-                    // this.removeDuplicate(this.key(poped));
                     this.removeDuplicate(this.cursorGetter(poped).toString());
                 }
             }
@@ -420,9 +398,7 @@ export class MugenScroll<T> {
         }
         return new Promise<void>((resolve, reject) => {
             const observer = new MutationObserver((mutations: Array<MutationRecord>, _) => {
-                // this.llogger.info(...mutations.map(v => ` ${v.addedNodes.length}:${v.removedNodes.length}`));
                 const d: HTMLElement = def(this.internalElParent);
-                // this.llogger.info(`- ${d}, ${this.dupChecker.size}, ${d.children.length}`);
                 let count = 0;
                 for (let i = 0; i < d.children.length; i++) {
                     const item = d.children.item(i);
@@ -436,7 +412,6 @@ export class MugenScroll<T> {
                 if (count > 0) {
                     return;
                 }
-                // this.llogger.info('Updated');
                 observer.disconnect();
                 resolve();
             });
