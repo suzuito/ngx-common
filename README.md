@@ -15,7 +15,9 @@ npm install
 Test library on demo* application.
 
 ```bash
+# A terminal
 npm run build-lib
+# Another terminal
 npm run start-demo1
 ```
 
