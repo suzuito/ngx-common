@@ -6,7 +6,6 @@ import {
     OrderedDataStoreIdxService,
 } from 'ngx-mugen-scroll';
 import { Data } from './data';
-import { randomIds } from './top/random-ids';
 
 export class DataProviderImplAsc implements DataProvider<Data> {
     static store: OrderedDataStoreIdxServiceStore = {
