@@ -4,14 +4,15 @@ export interface Group {
 }
 
 
-export async function generateGroupsAtRandom(
+export function generateGroupsAtRandom(
     n: number,
-): Promise<void> {
-    const store = new GroupProviderServiceImplAsc(base);
+): Array<Group> {
+    const r = [];
     for (let i = 0; i < n; i++) {
-        await store.add({
+        r.push({
             id: `group-${i}`,
             name: `グループ-${i}`,
         });
     }
+    return r;
 }
