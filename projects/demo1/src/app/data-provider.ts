@@ -14,14 +14,20 @@ export class DataProviderImplAsc implements DataProvider<Data> {
         indices: [
             {
                 name: 'idx1',
-                keyPath: ['createdAt', 'name'],
+                keyPath: ['groupId', 'createdAt', 'name'],
                 unique: true,
             },
         ],
     };
+    public currentGroupId: string;
     constructor(
         private base: OrderedDataStoreIdxService,
-    ) { }
+    ) {
+        this.currentGroupId = '';
+    }
+    newCursor(v: Data): Cursor {
+        return new Cursor([v.groupId, v.createdAt, v.id]);
+    }
     async fetchBottom(
         cursor: Cursor, n: number, includeEqual: boolean,
     ): Promise<Array<Data>> {
@@ -31,6 +37,7 @@ export class DataProviderImplAsc implements DataProvider<Data> {
             cursor,
             n,
             includeEqual,
+            new Cursor([this.currentGroupId, 999999999999, '']),
         );
     }
     async fetchTop(
@@ -42,24 +49,30 @@ export class DataProviderImplAsc implements DataProvider<Data> {
             cursor,
             n,
             includeEqual,
+            new Cursor([this.currentGroupId, 0, '']),
         );
     }
     async fetchOnLoad(
         info: CursorStoreInfo,
     ): Promise<Array<Data>> {
+        console.log(info);
         return await this.base.getLargerN<Data>(
             DataProviderImplAsc.store.name,
             'idx1',
-            info.bottomCursor,
+            info.topCursor,
             info.n,
             true,
+            info.bottomCursor,
         );
     }
     async fetchOnInit(n: number): Promise<Array<Data>> {
+        if (this.currentGroupId === undefined) {
+            return [];
+        }
         return await this.base.getSmallerN<Data>(
             DataProviderImplAsc.store.name,
             'idx1',
-            new Cursor([Date.now() / 1000, '']),
+            new Cursor([this.currentGroupId, Date.now() / 1000, '']),
             n,
             true,
         );

@@ -19,6 +19,8 @@ export class Demo1Component implements OnInit, AfterViewInit {
   @ViewChild('bottomGroupList')
   public groupElBottom: ElementRef | undefined;
   public groupMugenScroll: MugenScroll<Group>;
+  private groupProvider: GroupProviderServiceImplDesc;
+  private currentGroup: Group | undefined;
 
   @ViewChild('parentDataList')
   public dataElParent: ElementRef | undefined;
@@ -27,14 +29,15 @@ export class Demo1Component implements OnInit, AfterViewInit {
   @ViewChild('bottomDataList')
   public dataElBottom: ElementRef | undefined;
   public dataMugenScroll: MugenScroll<Data>;
+  private dataProvider: DataProviderImplAsc;
 
   constructor(
     base: OrderedDataStoreIdxService,
     cursorStoreService: CursorStoreService,
   ) {
+    this.groupProvider = new GroupProviderServiceImplDesc(base);
     this.groupMugenScroll = new MugenScroll<Group>(
-      (v: Group) => new Cursor([v.id, v.name]),
-      new GroupProviderServiceImplDesc(base),
+      this.groupProvider,
       cursorStoreService,
     );
     this.groupMugenScroll.event.subscribe(ev => {
@@ -46,9 +49,9 @@ export class Demo1Component implements OnInit, AfterViewInit {
       }
     });
 
+    this.dataProvider = new DataProviderImplAsc(base);
     this.dataMugenScroll = new MugenScroll<Data>(
-      (v: Data) => new Cursor([v.createdAt, v.id]),
-      new DataProviderImplAsc(base),
+      this.dataProvider,
       cursorStoreService,
     );
     this.dataMugenScroll.event.subscribe(ev => {
@@ -106,6 +109,12 @@ export class Demo1Component implements OnInit, AfterViewInit {
   }
 
   async clickGroup(group: Group): Promise<void> {
+    if (this.currentGroup !== undefined) {
+      this.dataMugenScroll.save(`group-${this.currentGroup.id}-${this.currentGroup.name}`);
+    }
+    this.currentGroup = group;
+    this.dataProvider.currentGroupId = group.id;
+    this.dataMugenScroll.clearDatas();
     await this.dataMugenScroll.load(
       `group-${group.id}-${group.name}`,
       {

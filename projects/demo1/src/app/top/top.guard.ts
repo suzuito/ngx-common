@@ -19,7 +19,7 @@ export class TopGuard implements CanActivate {
     state: RouterStateSnapshot,
   ): Promise<boolean> {
     await this.dataStoreIdx.init(
-      5,
+      6,
       [
         DataProviderImplAsc.store,
         GroupProviderServiceImplDesc.store,

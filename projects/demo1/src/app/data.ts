@@ -42,8 +42,8 @@ export function generateDatasAtRandom(
     const r = [];
     for (let i = 0; i < n; i++) {
         r.push({
-            id: `data-${i}`,
-            name: `データ-${i}`,
+            id: `data-${i}-of-group-${groupId}`,
+            name: `データ-${i} of グループ ${groupId}`,
             groupId,
             message: sentence(),
             createdAt: now - i * 600,

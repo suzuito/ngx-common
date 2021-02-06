@@ -20,6 +20,9 @@ export class GroupProviderServiceImplDesc implements DataProvider<Group> {
   constructor(
     private base: OrderedDataStoreIdxService,
   ) { }
+  newCursor(v: Group): Cursor {
+    return new Cursor([v.id, v.name]);
+  }
   async fetchBottom(
     cursor: Cursor, n: number, includeEqual: boolean,
   ): Promise<Array<Group>> {
