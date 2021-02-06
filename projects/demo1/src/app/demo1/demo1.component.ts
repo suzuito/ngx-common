@@ -2,70 +2,124 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Cursor, CursorStoreService, MugenScroll, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
 import { Data } from '../data';
 import { DataProviderImplAsc } from '../data-provider';
+import { Group } from '../group';
+import { GroupProviderServiceImplDesc } from '../group-provider.service';
 
 @Component({
   selector: 'app-demo1',
   templateUrl: './demo1.component.html',
   styleUrls: ['./demo1.component.scss']
 })
-export class Demo1Component extends MugenScroll<Data> implements OnInit, AfterViewInit {
+export class Demo1Component implements OnInit, AfterViewInit {
 
-  @ViewChild('parent')
-  public elParent: ElementRef | undefined;
+  @ViewChild('parentGroupList')
+  public groupElParent: ElementRef | undefined;
+  @ViewChild('topGroupList')
+  public groupElTop: ElementRef | undefined;
+  @ViewChild('bottomGroupList')
+  public groupElBottom: ElementRef | undefined;
+  public groupMugenScroll: MugenScroll<Group>;
+  private groupProvider: GroupProviderServiceImplDesc;
+  private currentGroup: Group | undefined;
 
-  @ViewChild('top')
-  public elTop: ElementRef | undefined;
-
-  @ViewChild('bottom')
-  public elBottom: ElementRef | undefined;
+  @ViewChild('parentDataList')
+  public dataElParent: ElementRef | undefined;
+  @ViewChild('topDataList')
+  public dataElTop: ElementRef | undefined;
+  @ViewChild('bottomDataList')
+  public dataElBottom: ElementRef | undefined;
+  public dataMugenScroll: MugenScroll<Data>;
+  private dataProvider: DataProviderImplAsc;
 
   constructor(
     base: OrderedDataStoreIdxService,
-    cursorStore: CursorStoreService,
+    cursorStoreService: CursorStoreService,
   ) {
-    super(
-      (v: Data) => new Cursor([v.createdAt, v.name]),
-      new DataProviderImplAsc(base),
-      cursorStore,
-      {
-        waitTimeMilliSeconds: 500,
-        fetchLength: 100,
-        maxLength: 200,
-        threshold: 0.5,
-      },
+    this.groupProvider = new GroupProviderServiceImplDesc(base);
+    this.groupMugenScroll = new MugenScroll<Group>(
+      this.groupProvider,
+      cursorStoreService,
     );
+    this.groupMugenScroll.event.subscribe(ev => {
+      if (ev.type === 'onTop') {
+        this.groupMugenScroll.fetchTop();
+      }
+      if (ev.type === 'onBottom') {
+        this.groupMugenScroll.fetchBottom();
+      }
+    });
+
+    this.dataProvider = new DataProviderImplAsc(base);
+    this.dataMugenScroll = new MugenScroll<Data>(
+      this.dataProvider,
+      cursorStoreService,
+    );
+    this.dataMugenScroll.event.subscribe(ev => {
+      if (ev.type === 'onTop') {
+        this.dataMugenScroll.fetchTop();
+      }
+      if (ev.type === 'onBottom') {
+        this.dataMugenScroll.fetchBottom();
+      }
+    });
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    if (!this.elParent) {
-      console.error(`elParent is undefined`);
+    if (!this.groupElParent) {
+      console.error(`groupElParent is undefined`);
       return;
     }
-    if (!this.elBottom) {
-      console.error(`elBottom is undefined`);
+    if (!this.groupElBottom) {
+      console.error(`groupElBottom is undefined`);
       return;
     }
-    if (!this.elTop) {
-      console.error(`elTop is undefined`);
+    if (!this.groupElTop) {
+      console.error(`groupElTop is undefined`);
       return;
     }
-    this.initElements({
-      elParent: this.elParent.nativeElement,
-      elBottom: this.elBottom.nativeElement,
-      elTop: this.elTop.nativeElement,
+    this.groupMugenScroll.initElements({
+      elParent: this.groupElParent.nativeElement,
+      elBottom: this.groupElBottom.nativeElement,
+      elTop: this.groupElTop.nativeElement,
     });
-    this.initEdgeDetector();
-    this.load('demo1', { initScrollBottom: false, });
+    this.groupMugenScroll.initEdgeDetector();
+    this.groupMugenScroll.load('demo1', { initScrollBottom: false, });
+
+    if (!this.dataElParent) {
+      console.error(`dataElParent is undefined`);
+      return;
+    }
+    if (!this.dataElBottom) {
+      console.error(`dataElBottom is undefined`);
+      return;
+    }
+    if (!this.dataElTop) {
+      console.error(`dataElTop is undefined`);
+      return;
+    }
+    this.dataMugenScroll.initElements({
+      elParent: this.dataElParent.nativeElement,
+      elBottom: this.dataElBottom.nativeElement,
+      elTop: this.dataElTop.nativeElement,
+    });
+    this.dataMugenScroll.initEdgeDetector();
   }
 
-  async onBottom(): Promise<void> {
-    await this.fetchBottom();
-  }
-
-  async onTop(): Promise<void> {
-    await this.fetchTop();
+  async clickGroup(group: Group): Promise<void> {
+    if (this.currentGroup !== undefined) {
+      this.dataMugenScroll.save(`group-${this.currentGroup.id}-${this.currentGroup.name}`);
+    }
+    this.currentGroup = group;
+    this.dataProvider.currentGroupId = group.id;
+    this.dataMugenScroll.clearDatas();
+    await this.dataMugenScroll.load(
+      `group-${group.id}-${group.name}`,
+      {
+        initScrollBottom: true,
+      },
+    );
   }
 }

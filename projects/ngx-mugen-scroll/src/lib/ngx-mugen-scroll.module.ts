@@ -9,6 +9,8 @@ import { NgxMugenScrollComponent } from './ngx-mugen-scroll.component';
   ],
   imports: [
   ],
-  exports: [NgxMugenScrollComponent]
+  exports: [
+    NgxMugenScrollComponent,
+  ],
 })
 export class NgxMugenScrollModule { }

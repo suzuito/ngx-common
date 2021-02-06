@@ -1,3 +1,4 @@
+import { Subject, Subscription } from 'rxjs';
 import { Cursor } from './cursor';
 import { CursorStoreInfo, CursorStoreService } from './cursor-store.service';
 
@@ -9,16 +10,17 @@ export interface DataProvider<T> {
     fetchOnLoad(
         info: CursorStoreInfo): Promise<Array<T>>;
     fetchOnInit(n: number): Promise<Array<T>>;
+    newCursor(v: T): Cursor;
 }
 
 export function generateCallbackIntersectionObserverDefault(
     bottom: {
         el: HTMLElement,
-        on: () => Promise<void>,
+        on: () => void,
     },
     top: {
         el: HTMLElement,
-        on: () => Promise<void>,
+        on: () => void,
     },
     millisecondsEdgeDetecterInit: number,
 ): (entities: Array<IntersectionObserverEntry>) => void {
@@ -59,10 +61,27 @@ function def(e: HTMLElement | undefined): HTMLElement {
     return e;
 }
 
+export type CallbackIntersectionObserverGenerator = (
+    bottom: {
+        el: HTMLElement,
+        on: () => void,
+    },
+    top: {
+        el: HTMLElement,
+        on: () => void,
+    },
+    millisecondsEdgeDetecterInit: number,
+) =>
+    (entities: Array<IntersectionObserverEntry>) => void;
+
+export interface MugenScrollEvent {
+    type: 'onBottom' | 'onTop';
+}
+
 export class MugenScroll<T> {
 
     public datas: Array<T>;
-    public dupChecker: Map<string, boolean>;
+    private dupChecker: Map<string, boolean>;
 
     private observerScrollingVisibility: IntersectionObserver | undefined;
 
@@ -72,34 +91,43 @@ export class MugenScroll<T> {
 
     public isLoading: boolean;
 
+    private callbackIntersectionObserverGenerator: CallbackIntersectionObserverGenerator;
+    private opt: MugenScrollOption;
+
+    public event: Subject<MugenScrollEvent>;
+
     constructor(
-        private cursorGetter: (v: T) => Cursor,
         private streamProvider: DataProvider<T>,
         private streamCursorStore: CursorStoreService,
-        public opt: MugenScrollOption,
-        public callbackIntersectionObserverGenerator: (
-            bottom: {
-                el: HTMLElement,
-                on: () => Promise<void>,
-            },
-            top: {
-                el: HTMLElement,
-                on: () => Promise<void>,
-            },
-            millisecondsEdgeDetecterInit: number,
-        ) =>
-            (entities: Array<IntersectionObserverEntry>) => void = generateCallbackIntersectionObserverDefault,
+        opt?: MugenScrollOption | undefined,
+        callbackIntersectionObserverGenerator?: CallbackIntersectionObserverGenerator | undefined,
     ) {
+        if (opt === undefined) {
+            this.opt = {
+                waitTimeMilliSeconds: 500,
+                fetchLength: 20,
+                maxLength: 50,
+                threshold: 1.0,
+            }; // default
+        } else {
+            this.opt = opt;
+        }
+        if (callbackIntersectionObserverGenerator === undefined) {
+            this.callbackIntersectionObserverGenerator = generateCallbackIntersectionObserverDefault;
+        } else {
+            this.callbackIntersectionObserverGenerator = callbackIntersectionObserverGenerator;
+        }
         this.datas = [];
         this.dupChecker = new Map<string, boolean>();
         this.isLoading = false;
         if (this.opt.fetchLength >= this.opt.maxLength) {
             throw new Error(`Invalid length: ${this.opt.fetchLength} ${this.opt.maxLength}`);
         }
+        this.event = new Subject<MugenScrollEvent>();
     }
 
     key(v: T): string {
-        return this.cursorGetter(v).toString();
+        return this.streamProvider.newCursor(v).toString();
     }
 
     initElements(a: {
@@ -123,8 +151,8 @@ export class MugenScroll<T> {
         }
         this.streamCursorStore.save(
             uniqId,
-            this.cursorGetter(bottomData),
-            this.cursorGetter(topData),
+            this.streamProvider.newCursor(bottomData),
+            this.streamProvider.newCursor(topData),
             this.datas.length,
             def(this.internalElParent).scrollTop,
         );
@@ -153,13 +181,14 @@ export class MugenScroll<T> {
                         if (!bottomData) {
                             return;
                         }
-                        this.scrollTo(this.scrollTopAtBottom(this.cursorGetter(bottomData).toString()));
+                        this.scrollTo(this.scrollTopAtBottom(this.streamProvider.newCursor(bottomData).toString()));
                         return;
                     }
                     return;
                 }
                 this.scrollTo(scrollTop);
             })
+            .catch(err => console.error(err))
             .finally(() => {
                 this.isLoading = false;
             })
@@ -180,7 +209,7 @@ export class MugenScroll<T> {
             this.isLoading = false;
             throw new Error(`topDataBeforeFetch is undefined`);
         }
-        await this.streamProvider.fetchTop(this.cursorGetter(topDataBeforeFetch), this.opt.fetchLength, false)
+        await this.streamProvider.fetchTop(this.streamProvider.newCursor(topDataBeforeFetch), this.opt.fetchLength, false)
             .then(v => this.addDatasToTop(...v))
             .then(v => {
                 if (v.length <= 0) {
@@ -189,7 +218,7 @@ export class MugenScroll<T> {
                 if (!topDataBeforeFetch) {
                     return;
                 }
-                this.scrollTo(this.scrollTopAtTop(this.cursorGetter(topDataBeforeFetch).toString()));
+                this.scrollTo(this.scrollTopAtTop(this.streamProvider.newCursor(topDataBeforeFetch).toString()));
             })
             .then(() => new Promise(resolve => {
                 setTimeout(resolve, this.opt.waitTimeMilliSeconds);
@@ -210,7 +239,7 @@ export class MugenScroll<T> {
             this.isLoading = false;
             throw new Error(`bottomDataBeforeFetch is undefined`);
         }
-        await this.streamProvider.fetchBottom(this.cursorGetter(bottomDataBeforeFetch), this.opt.fetchLength, false)
+        await this.streamProvider.fetchBottom(this.streamProvider.newCursor(bottomDataBeforeFetch), this.opt.fetchLength, false)
             .then(v => this.addDatasToBottom(...v))
             .then(v => {
                 if (v.length <= 0) {
@@ -219,7 +248,7 @@ export class MugenScroll<T> {
                 if (!bottomDataBeforeFetch) {
                     return;
                 }
-                this.scrollTo(this.scrollTopAtBottom(this.cursorGetter(bottomDataBeforeFetch).toString()));
+                this.scrollTo(this.scrollTopAtBottom(this.streamProvider.newCursor(bottomDataBeforeFetch).toString()));
             })
             .then(() => new Promise(resolve => {
                 setTimeout(resolve, this.opt.waitTimeMilliSeconds);
@@ -230,10 +259,6 @@ export class MugenScroll<T> {
             });
     }
 
-    onDestroy(): void {
-        this.destroyEdgeDetector();
-    }
-
     initEdgeDetector(): void {
         if (this.observerScrollingVisibility) {
             return;
@@ -242,11 +267,19 @@ export class MugenScroll<T> {
             this.callbackIntersectionObserverGenerator(
                 {
                     el: def(this.internalElBottom),
-                    on: () => this.onBottom(),
+                    on: (): void => {
+                        this.event.next({
+                            type: 'onBottom',
+                        });
+                    },
                 },
                 {
                     el: def(this.internalElTop),
-                    on: () => this.onTop(),
+                    on: () => {
+                        this.event.next({
+                            type: 'onTop',
+                        });
+                    },
                 },
                 Date.now(),
             ),
@@ -271,7 +304,7 @@ export class MugenScroll<T> {
         }
     }
 
-    public isUpdated(): boolean {
+    private isUpdated(): boolean {
         const d: HTMLElement = def(this.internalElParent);
         let count = 0;
         for (let i = 0; i < d.children.length; i++) {
@@ -309,7 +342,7 @@ export class MugenScroll<T> {
     private filterDuplicate(...items: Array<T>): Array<T> {
         const added: Array<T> = [];
         for (const v of items) {
-            if (this.dupChecker.has(this.cursorGetter(v).toString())) {
+            if (this.dupChecker.has(this.streamProvider.newCursor(v).toString())) {
                 continue;
             }
             added.push(v);
@@ -329,7 +362,7 @@ export class MugenScroll<T> {
         }
     }
 
-    async addDatasToBottom(...items: Array<T>): Promise<Array<T>> {
+    private async addDatasToBottom(...items: Array<T>): Promise<Array<T>> {
         if (items.length <= 0) {
             return Promise.resolve([]);
         }
@@ -348,20 +381,20 @@ export class MugenScroll<T> {
             });
             observer.observe(def(this.internalElParent), { childList: true });
             this.datas.push(...added);
-            this.addDuplicate(...added.map(v => this.cursorGetter(v).toString()));
+            this.addDuplicate(...added.map(v => this.streamProvider.newCursor(v).toString()));
             if (this.datas.length > this.opt.maxLength) {
                 for (let i = 0; i < this.datas.length - this.opt.maxLength; i++) {
                     const shifted = this.datas.shift();
                     if (!shifted) {
                         continue;
                     }
-                    this.removeDuplicate(this.cursorGetter(shifted).toString());
+                    this.removeDuplicate(this.streamProvider.newCursor(shifted).toString());
                 }
             }
         });
     }
 
-    async addDatasToTop(...items: Array<T>): Promise<Array<T>> {
+    private async addDatasToTop(...items: Array<T>): Promise<Array<T>> {
         if (items.length <= 0) {
             return [];
         }
@@ -379,14 +412,14 @@ export class MugenScroll<T> {
             });
             observer.observe(def(this.internalElParent), { childList: true });
             this.datas.unshift(...added);
-            this.addDuplicate(...added.map(v => this.cursorGetter(v).toString()));
+            this.addDuplicate(...added.map(v => this.streamProvider.newCursor(v).toString()));
             if (this.datas.length > this.opt.maxLength) {
                 for (let i = 0; i < this.datas.length - this.opt.maxLength; i++) {
                     const poped = this.datas.pop();
                     if (!poped) {
                         continue;
                     }
-                    this.removeDuplicate(this.cursorGetter(poped).toString());
+                    this.removeDuplicate(this.streamProvider.newCursor(poped).toString());
                 }
             }
         });
@@ -435,7 +468,7 @@ export class MugenScroll<T> {
         return this.datas[this.datas.length - 1];
     }
 
-    scrollTopAtTop(targetKey: string): number {
+    private scrollTopAtTop(targetKey: string): number {
         let s = 0;
         const root: HTMLElement = def(this.internalElParent);
         for (let i = 0; i < root.children.length; i++) {
@@ -452,7 +485,7 @@ export class MugenScroll<T> {
         return s;
     }
 
-    scrollTopAtBottom(targetKey: string): number {
+    private scrollTopAtBottom(targetKey: string): number {
         let s = 0;
         const root: HTMLElement = def(this.internalElParent);
         for (let i = 0; i < root.children.length; i++) {
@@ -473,7 +506,7 @@ export class MugenScroll<T> {
         return s;
     }
 
-    scrollTo(s: number): void {
+    private scrollTo(s: number): void {
         const p: HTMLElement = def(this.internalElParent);
         p.scrollTo({ top: s });
     }
@@ -503,9 +536,6 @@ export class MugenScroll<T> {
         }
         return s;
     }
-
-    async onBottom(): Promise<void> { }
-    async onTop(): Promise<void> { }
 
     isBottom(): boolean {
         if (!this.observerScrollingVisibility) {
