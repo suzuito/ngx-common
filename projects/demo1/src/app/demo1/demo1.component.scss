@@ -5,26 +5,63 @@
     position: absolute;
 
     left: 60px;
-    right: 60px;
+    width: 600px;
     top: 60px;
     bottom: 60px;
 
     overflow: scroll;
 }
 
-.top {
+.main-group-list {
+    border: 3px solid red;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0px;
+    width: 200px;
+    height: 100%;
+
+    overflow: scroll;
+}
+
+.top-group-list {
     height: 100px;
 }
 
-.bottom {
+.bottom-group-list {
     height: 100px;
 }
 
-.data {
+.data-group-list {
     border: 3px solid black;
     box-sizing: border-box;
 
     position: relative;
 
+    cursor: pointer;
+
     padding: 6px;
+}
+
+.main-data-list {
+    border: 3px solid red;
+    box-sizing: border-box;
+    position: absolute;
+    left: 200px;
+    right: 0px;
+    height: 100%;
+
+    overflow: scroll;
+}
+
+.top-data-list {
+    height: 100px;
+}
+
+.bottom-data-list {
+    height: 100px;
+}
+
+.data-data-list {
+    border: 3px solid black;
+    box-sizing: border-box;
 }

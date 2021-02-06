@@ -257,7 +257,8 @@ export class OrderedDataStoreIdxService {
     direction: 'next' | 'prev',
     n: number,
   ): Promise<Array<T>> {
-    console.log(`Fetch ${storeName}.${indexName} at ${current.toString()} from indexed db`);
+    console.log(`Fetch ${storeName}.${indexName} at ${current.toString()}` +
+      `(${range.lower}-${range.upper}.${direction}.${n}) from indexed db`);
     const ret: Array<T> = [];
     return new Promise<Array<T>>((resolve, reject) => {
       const db = this.validDB();

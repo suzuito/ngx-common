@@ -56,10 +56,10 @@ export class DataProviderImplAsc implements DataProvider<Data> {
         );
     }
     async fetchOnInit(n: number): Promise<Array<Data>> {
-        return await this.base.getLargerN<Data>(
+        return await this.base.getSmallerN<Data>(
             DataProviderImplAsc.store.name,
             'idx1',
-            new Cursor([0, '']),
+            new Cursor([Date.now() / 1000, '']),
             n,
             true,
         );

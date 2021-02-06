@@ -5,14 +5,14 @@ import { Group } from './group';
 @Injectable({
   providedIn: 'root'
 })
-export class GroupProviderServiceImplAsc implements DataProvider<Group> {
+export class GroupProviderServiceImplDesc implements DataProvider<Group> {
   static store: OrderedDataStoreIdxServiceStore = {
     name: 'test-group',
     keyPath: ['id'],
     indices: [
       {
         name: 'idx1',
-        keyPath: ['name', 'id'],
+        keyPath: ['id', 'name'],
         unique: true,
       }
     ],
@@ -24,7 +24,7 @@ export class GroupProviderServiceImplAsc implements DataProvider<Group> {
     cursor: Cursor, n: number, includeEqual: boolean,
   ): Promise<Array<Group>> {
     return await this.base.getLargerN<Group>(
-      GroupProviderServiceImplAsc.store.name,
+      GroupProviderServiceImplDesc.store.name,
       'idx1',
       cursor,
       n,
@@ -35,7 +35,7 @@ export class GroupProviderServiceImplAsc implements DataProvider<Group> {
     cursor: Cursor, n: number, includeEqual: boolean,
   ): Promise<Array<Group>> {
     return await this.base.getSmallerN<Group>(
-      GroupProviderServiceImplAsc.store.name,
+      GroupProviderServiceImplDesc.store.name,
       'idx1',
       cursor,
       n,
@@ -46,7 +46,7 @@ export class GroupProviderServiceImplAsc implements DataProvider<Group> {
     info: CursorStoreInfo,
   ): Promise<Array<Group>> {
     return await this.base.getLargerN<Group>(
-      GroupProviderServiceImplAsc.store.name,
+      GroupProviderServiceImplDesc.store.name,
       'idx1',
       info.bottomCursor,
       info.n,
@@ -55,7 +55,7 @@ export class GroupProviderServiceImplAsc implements DataProvider<Group> {
   }
   async fetchOnInit(n: number): Promise<Array<Group>> {
     return await this.base.getLargerN<Group>(
-      GroupProviderServiceImplAsc.store.name,
+      GroupProviderServiceImplDesc.store.name,
       'idx1',
       new Cursor([0, '']),
       n,
@@ -64,6 +64,6 @@ export class GroupProviderServiceImplAsc implements DataProvider<Group> {
   }
 
   async add(...v: Array<Group>): Promise<void> {
-    this.base.add<Group>(GroupProviderServiceImplAsc.store.name, ...v);
+    this.base.add<Group>(GroupProviderServiceImplDesc.store.name, ...v);
   }
 }

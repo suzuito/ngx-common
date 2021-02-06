@@ -4,7 +4,7 @@ import { OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
 import { Data, generateDatasAtRandom } from '../data';
 import { DataProviderImplAsc } from '../data-provider';
 import { generateGroupsAtRandom, Group } from '../group';
-import { GroupProviderServiceImplAsc } from '../group-provider.service';
+import { GroupProviderServiceImplDesc } from '../group-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,10 @@ export class TopGuard implements CanActivate {
     state: RouterStateSnapshot,
   ): Promise<boolean> {
     await this.dataStoreIdx.init(
-      2,
+      5,
       [
         DataProviderImplAsc.store,
-        GroupProviderServiceImplAsc.store,
+        GroupProviderServiceImplDesc.store,
       ],
     );
     await this.dataStoreIdx.clearAll();
@@ -31,7 +31,7 @@ export class TopGuard implements CanActivate {
     groups.forEach(group => {
       datas.push(...generateDatasAtRandom(group.id, 100));
     });
-    const providerGroups = new GroupProviderServiceImplAsc(this.dataStoreIdx);
+    const providerGroups = new GroupProviderServiceImplDesc(this.dataStoreIdx);
     const providerDatas = new DataProviderImplAsc(this.dataStoreIdx);
     providerGroups.add(...groups);
     providerDatas.add(...datas);
