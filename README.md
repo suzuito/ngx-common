@@ -30,9 +30,6 @@ npm run test-lib
 ### Publish
 
 ```bash
-# If new version
-npm version <new version>
-
 npm run build-dist
 cd dist/ngx-mugen-scroll
 npm publish
