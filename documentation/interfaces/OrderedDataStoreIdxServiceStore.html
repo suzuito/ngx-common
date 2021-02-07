@@ -1,0 +1,623 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-mugen-scroll documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-mugen-scroll documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Interfaces</li>
+  <li>OrderedDataStoreIdxServiceStore</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/ngx-mugen-scroll/src/lib/ordered-data-store-idx.service.ts</code>
+        </p>
+
+
+
+        <section>
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#indices">indices</a>
+                                </li>
+                                <li>
+                                        <a href="#keyPath">keyPath</a>
+                                </li>
+                                <li>
+                                        <a href="#name">name</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="indices"></a>
+                                        <span class="name"><b>indices</b><a href="#indices"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>indices:         <code><a href="../injectables/OrderedDataStoreIdxService.html" target="_self" >Array&lt;OrderedDataStoreIdxServiceIndex&gt;</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="../injectables/OrderedDataStoreIdxService.html" target="_self" >Array&lt;OrderedDataStoreIdxServiceIndex&gt;</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="keyPath"></a>
+                                        <span class="name"><b>keyPath</b><a href="#keyPath"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>keyPath:     <code>string | Array&lt;string&gt;</code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>    <code>string | Array&lt;string&gt;</code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="name"></a>
+                                        <span class="name"><b>name</b><a href="#name"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>name:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import { Cursor } from &#x27;./cursor&#x27;;
+
+
+export class NotFoundResourceError implements Error {
+  readonly name: string;
+  constructor(public message: string) {
+    this.name &#x3D; this.constructor.name;
+  }
+}
+
+export interface OrderedDataStoreIdxServiceIndex {
+  name: string;
+  keyPath: string | Array&lt;string&gt;;
+  unique: boolean;
+}
+
+export interface OrderedDataStoreIdxServiceStore {
+  name: string;
+  keyPath: string | Array&lt;string&gt;;
+  indices: Array&lt;OrderedDataStoreIdxServiceIndex&gt;;
+}
+
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class OrderedDataStoreIdxService {
+
+  private indexedDB: IDBFactory;
+  private db: IDBDatabase | undefined;
+  private dbName: string;
+
+  constructor(
+  ) {
+    this.dbName &#x3D; &#x27;ngx-mugen-scroll-store&#x27;;
+    this.indexedDB &#x3D; window.indexedDB;
+  }
+
+  static async fetch&lt;T&gt;(
+    base: OrderedDataStoreIdxService,
+    store: OrderedDataStoreIdxServiceStore,
+    key: string,
+    index: string,
+    fetcher: () &#x3D;&gt; Promise&lt;T&gt;,
+  ): Promise&lt;T&gt; {
+    let data &#x3D; await base.get&lt;T&gt;(
+      store.name,
+      key,
+      index,
+    );
+    if (data) {
+      console.log(&#x60;Fetch ${store.name}.${index}.${key} from indexed db&#x60;);
+      return data;
+    }
+    data &#x3D; await fetcher();
+    if (!data) {
+      throw new NotFoundResourceError(&#x60;Cannot find &#x27;${key}&#x27;&#x60;);
+    }
+    console.log(&#x60;Fetch ${store.name}.${index}.${key} from remote&#x60;);
+    await base.add(
+      store.name,
+      data,
+    );
+    return data;
+  }
+
+  private validDB(): IDBDatabase {
+    if (!this.db) {
+      throw new Error(&#x27;db is undefined&#x27;);
+    }
+    return this.db;
+  }
+
+
+  async init(version: number, stores: Array&lt;OrderedDataStoreIdxServiceStore&gt;): Promise&lt;void&gt; {
+    return new Promise&lt;void&gt;((resolve, reject) &#x3D;&gt; {
+      const request &#x3D; this.indexedDB.open(this.dbName, version);
+      request.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        this.db &#x3D; (ev.target as any).result as IDBDatabase;
+        resolve();
+      };
+      request.onupgradeneeded &#x3D; async (ev: Event) &#x3D;&gt; {
+        this.db &#x3D; (ev.target as any).result as IDBDatabase;
+        const db &#x3D; this.db;
+        const resultsInitStore: Array&lt;Promise&lt;void&gt;&gt; &#x3D; [];
+        stores.forEach(async store &#x3D;&gt; {
+          resultsInitStore.push(initStore(db, store.name, store.keyPath, store.indices));
+        });
+        for (const result of resultsInitStore) {
+          await result;
+        }
+        resolve();
+      };
+      request.onblocked &#x3D; (ev: Event) &#x3D;&gt; {
+        console.error(ev);
+        reject(ev);
+      };
+      request.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+        console.error(ev);
+        reject(ev);
+      };
+    });
+  }
+
+  async add&lt;T&gt;(storeName: string, ...args: Array&lt;T&gt;): Promise&lt;void&gt; {
+    const db &#x3D; this.validDB();
+    const tx &#x3D; validTx(db, storeName, &#x27;readwrite&#x27;);
+    args.forEach((arg: T) &#x3D;&gt; {
+      tx.objectStore(storeName).put(arg);
+    });
+  }
+
+  async get&lt;T&gt;(
+    storeName: string,
+    query: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    index: string &#x3D; &#x27;&#x27;,
+  ): Promise&lt;T | undefined&gt; {
+    return new Promise&lt;T&gt;((resolve, reject) &#x3D;&gt; {
+      const db &#x3D; this.validDB();
+      const tx &#x3D; validTx(db, storeName, &#x27;readonly&#x27;);
+      const store &#x3D; tx.objectStore(storeName);
+      let idx &#x3D; null;
+      if (index) {
+        idx &#x3D; store.index(index);
+      } else {
+        idx &#x3D; store;
+      }
+      const r &#x3D; idx.get(query);
+      r.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        resolve(r.result);
+      };
+      r.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+        reject(r.error);
+      };
+    });
+  }
+
+  async delete(
+    storeName: string,
+    key: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    index: string &#x3D; &#x27;&#x27;,
+  ): Promise&lt;void&gt; {
+    const db &#x3D; this.validDB();
+    const tx &#x3D; validTx(db, storeName, &#x27;readwrite&#x27;);
+    const store &#x3D; tx.objectStore(storeName);
+    if (!index) {
+      return new Promise&lt;void&gt;((resolve, reject) &#x3D;&gt; {
+        const r &#x3D; store.delete(key);
+        r.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+          resolve();
+        };
+        r.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+          reject();
+        };
+      });
+    }
+    const idx &#x3D; store.index(index);
+    const key2 &#x3D; idx.getKey(key);
+    if (!key2) {
+      return;
+    }
+    return new Promise&lt;void&gt;((resolve, reject) &#x3D;&gt; {
+      key2.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        const target &#x3D; ev.target as any;
+        this.delete(storeName, target.result, &#x27;&#x27;).then(resolve).catch(reject);
+      };
+      key2.onerror &#x3D; (ev: Event) &#x3D;&gt; { reject(ev); };
+    });
+  }
+
+  async clear(storeName: string): Promise&lt;void&gt; {
+    const db &#x3D; this.validDB();
+    const tx &#x3D; validTx(db, storeName, &#x27;readwrite&#x27;);
+    const store &#x3D; tx.objectStore(storeName);
+    const r &#x3D; store.clear();
+    return new Promise((resolve, reject) &#x3D;&gt; {
+      r.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        resolve();
+      };
+      r.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+        reject();
+      };
+    });
+  }
+
+  async clearAll(): Promise&lt;void&gt; {
+    const db &#x3D; this.validDB();
+    const objectStoreNames &#x3D; db.objectStoreNames;
+    for (let i &#x3D; 0; i &lt; objectStoreNames.length; i++) {
+      const objectStoreName &#x3D; objectStoreNames.item(i);
+      if (!objectStoreName) {
+        continue;
+      }
+      await this.clear(objectStoreName);
+    }
+  }
+
+  async getLargerN&lt;T&gt;(
+    storeName: string,
+    indexName: string,
+    current: Cursor,
+    n: number,
+    includeEqual: boolean &#x3D; false,
+    end: Cursor | null &#x3D; null,
+  ): Promise&lt;Array&lt;T&gt;&gt; {
+    let range &#x3D; IDBKeyRange.lowerBound(current.getItems(), !includeEqual);
+    if (end) {
+      range &#x3D; IDBKeyRange.bound(
+        current.getItems(),
+        end.getItems(),
+        !includeEqual,
+        true,
+      );
+    }
+    return await this.iter&lt;T&gt;(
+      storeName,
+      indexName,
+      current.getItems(),
+      range,
+      &#x27;next&#x27;,
+      n,
+    );
+  }
+
+  async getSmallerN&lt;T&gt;(
+    storeName: string,
+    indexName: string,
+    current: Cursor,
+    n: number,
+    includeEqual: boolean &#x3D; false,
+    end: Cursor | null &#x3D; null,
+  ): Promise&lt;Array&lt;T&gt;&gt; {
+    let range &#x3D; IDBKeyRange.upperBound(current.getItems(), !includeEqual);
+    if (end) {
+      range &#x3D; IDBKeyRange.bound(
+        end.getItems(),
+        current.getItems(),
+        true,
+        !includeEqual,
+      );
+    }
+    return await this.iter&lt;T&gt;(
+      storeName,
+      indexName,
+      current.getItems(),
+      range,
+      &#x27;prev&#x27;,
+      n,
+    );
+  }
+
+  private async iter&lt;T&gt;(
+    storeName: string,
+    indexName: string,
+    current: Array&lt;string | number&gt;,
+    range: IDBKeyRange,
+    direction: &#x27;next&#x27; | &#x27;prev&#x27;,
+    n: number,
+  ): Promise&lt;Array&lt;T&gt;&gt; {
+    // console.log(&#x60;Fetch ${storeName}.${indexName} at ${current.toString()}&#x60;);
+    // console.log(&#x60;From ${range.lower} to ${range.upper} sort ${direction} ${n} from indexed db&#x60;);
+    const ret: Array&lt;T&gt; &#x3D; [];
+    return new Promise&lt;Array&lt;T&gt;&gt;((resolve, reject) &#x3D;&gt; {
+      const db &#x3D; this.validDB();
+      const tx &#x3D; validTx(db, storeName, &#x27;readonly&#x27;);
+      let i &#x3D; 0;
+      const r &#x3D; tx.objectStore(storeName).index(indexName).openCursor(range, direction);
+      r.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        const cursor: IDBCursorWithValue &#x3D; (ev.target as any).result;
+        if (!cursor) {
+          // EOF
+          resolve(ret);
+          return;
+        }
+        if (i &gt;&#x3D; n) {
+          resolve(ret);
+          return;
+        }
+        if (direction &#x3D;&#x3D;&#x3D; &#x27;next&#x27;) {
+          ret.push(cursor.value);
+        } else {
+          ret.unshift(cursor.value);
+        }
+        cursor.continue();
+        i++;
+      };
+      r.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+        reject(ev);
+      };
+    });
+  }
+
+  public async filter&lt;T&gt;(
+    storeName: string,
+    direction: &#x27;next&#x27; | &#x27;prev&#x27;,
+    cb: (v: T, i: number) &#x3D;&gt; boolean,
+  ): Promise&lt;Array&lt;T&gt;&gt; {
+    console.log(&#x60;Filter ${storeName} from indexed db&#x60;);
+    const ret: Array&lt;T&gt; &#x3D; [];
+    return new Promise&lt;Array&lt;T&gt;&gt;((resolve, reject) &#x3D;&gt; {
+      const db &#x3D; this.validDB();
+      const tx &#x3D; validTx(db, storeName, &#x27;readonly&#x27;);
+      const r &#x3D; tx.objectStore(storeName).getAll();
+      let i &#x3D; 0;
+      r.onsuccess &#x3D; (ev: Event) &#x3D;&gt; {
+        const r2 &#x3D; ev.target as IDBRequest;
+        (r2.result as Array&lt;T&gt;).forEach((v: T) &#x3D;&gt; {
+          if (cb(v, i)) {
+            if (direction &#x3D;&#x3D;&#x3D; &#x27;next&#x27;) {
+              ret.push(v);
+            } else {
+              ret.unshift(v);
+            }
+          }
+        });
+        i++;
+        resolve(ret);
+      };
+      r.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+        reject(ev);
+      };
+    });
+  }
+}
+
+async function initStore(
+  db: IDBDatabase,
+  storeName: string,
+  keyPath: string | Array&lt;string&gt;,
+  indecies: Array&lt;OrderedDataStoreIdxServiceIndex&gt; &#x3D; [],
+): Promise&lt;void&gt; {
+  return new Promise&lt;void&gt;((resolve, reject) &#x3D;&gt; {
+    if (db.objectStoreNames.contains(storeName)) {
+      return resolve();
+    }
+    const store &#x3D; db.createObjectStore(
+      storeName,
+      {
+        keyPath,
+      },
+    );
+    indecies.forEach(v &#x3D;&gt; {
+      store.createIndex(
+        v.name,
+        v.keyPath,
+        {
+          unique: v.unique,
+        },
+      );
+    });
+    store.transaction.oncomplete &#x3D; (ev: Event) &#x3D;&gt; {
+      resolve();
+    };
+    store.transaction.onabort &#x3D; (ev: Event) &#x3D;&gt; {
+      reject(ev);
+    };
+    store.transaction.onerror &#x3D; (ev: Event) &#x3D;&gt; {
+      reject(ev);
+    };
+  });
+
+}
+
+
+function validTx(db: IDBDatabase, storeName: string, mode?: &#x27;readonly&#x27; | &#x27;readwrite&#x27; | &#x27;versionchange&#x27; | undefined): IDBTransaction {
+  const tx &#x3D; db.transaction(storeName, mode);
+  if (!tx) {
+    throw new Error(&#x60;Cannot get transaction &#x27;${storeName}&#x27;&#x60;);
+  }
+  return tx;
+}
+</code></pre>
+    </div>
+</div>
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'OrderedDataStoreIdxServiceStore.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
