@@ -1,10 +1,8 @@
-∞
+The infinite scroll library for AngularJS
 
 # NgxMugenScroll
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.9.
-
-The infinite scroll library for AngularJS.
 
 - [API references](https://suzuito.github.io/ngx-mugen-scroll/)
 - [live demo1](https://stackblitz.com/edit/angular-ivy-fuk6jc)
