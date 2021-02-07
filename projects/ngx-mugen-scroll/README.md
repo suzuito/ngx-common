@@ -6,9 +6,10 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 
 The infinite scroll library for AngularJS.
 
-[API references](https://suzuito.github.io/ngx-mugen-scroll/)
+- [API references](https://suzuito.github.io/ngx-mugen-scroll/)
+- [live demo1](https://stackblitz.com/edit/angular-ivy-fuk6jc)
 
-## Example use
+# Set up
 
 You need to import `NgxMugenScrollModule`.
 
@@ -22,3 +23,23 @@ import { NgxMugenScrollModule } from 'ngx-mugen-scroll';
       ...
   ],
 ```
+
+# Usage
+
+## Overview
+
+This library provides [NgxMugenScrollComponent](https://suzuito.github.io/ngx-mugen-scroll/components/NgxMugenScrollComponent.html) that implements infinite scroll.
+
+`NgxMugenScrollComponent` has [provider](https://suzuito.github.io/ngx-mugen-scroll/components/NgxMugenScrollComponent.html#provider) that provides datas displayed on the component during scrolling.
+
+`provider` is suitable for [DataProvider](https://suzuito.github.io/ngx-mugen-scroll/interfaces/DataProvider.html) interface.
+
+## API
+
+- [reference docs](https://suzuito.github.io/ngx-mugen-scroll)
+
+## Example
+
+### Simple infinite scroll
+
+[live demo1](https://stackblitz.com/edit/angular-ivy-fuk6jc)

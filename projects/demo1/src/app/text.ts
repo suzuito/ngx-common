@@ -59,27 +59,4 @@ export const rndText = new RndText();
 rndText.generateStrings();
 
 /*
-RndText.prototype.getString = function (langCode) {
-    langCode = langCode || 'en';
-    var lang = this.strCodes[langCode], result = [];
-    if (this.checkType('Array', lang)) {
-        var i = 0, length = lang.length;
-        for (; i < length; i += 1) {
-            result.push(String.fromCharCode(Math.floor(Math.random() * (lang[i].end - lang[i].start + 1) + lang[i].start)));
-        }
-        result = result[Math.floor(Math.random() * result.length)].replace(/\s/g, '');
-    } else {
-        result = String.fromCharCode(Math.floor(Math.random() * (lang.end - lang.start + 1)));
-    }
-    return result.toString();
-};
-
-RndText.prototype.getStrings = function (langCode, length) {
-    length = length || 1;
-    var i = 0, result = [];
-    for (; i < length; i += 1) {
-        result.push(this.getString(langCode));
-    }
-    return result.join('');
-};
 */

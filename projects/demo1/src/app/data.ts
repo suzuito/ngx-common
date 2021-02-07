@@ -13,10 +13,6 @@ const adjectives = ['beautiful', 'lazy', 'professional', 'lovely', 'dumb', 'roug
 const adverbs = ['slowly', 'elegantly', 'precisely', 'quickly', 'sadly', 'humbly', 'proudly', 'shockingly', 'calmly', 'passionately'];
 const preposition = ['down', 'into', 'up', 'on', 'upon', 'below', 'above', 'through', 'across', 'towards'];
 
-function randGen(): number {
-    return Math.floor(Math.random() * 5);
-}
-
 function sentence(): string {
     const rand1 = Math.floor(Math.random() * 10);
     const rand2 = Math.floor(Math.random() * 10);
