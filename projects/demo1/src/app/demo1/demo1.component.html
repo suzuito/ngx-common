@@ -1,26 +1,8 @@
-<div class='main'>
-    <div class='main-group-list' #parentGroupList>
-        <div class='top-group-list' #topGroupList></div>
-        <div class='data-group-list' *ngFor='let group of groupMugenScroll.datas'
-            [attr.key]='groupMugenScroll.key(group)' (click)='clickGroup(group)'>
-            <div>{{group.name}}</div>
-        </div>
-        <div class='bottom-group-list' #bottomGroupList></div>
+<lib-ngx-mugen-scroll class='main' [provider]='provider'>
+    <div libMugenScrollTop class='top'></div>
+    <div *libMugenScrollData='let data = data' style='padding: 6px;'>
+        <div>{{data.createdAt * 1000 | date:"full"}}</div>
+        <div>{{data.message}}</div>
     </div>
-    <div class='main-data-list' #parentDataList>
-        <div class='top-data-list' #topDataList></div>
-        <div class='data-data-list' #dataDataList *ngFor='let data of dataMugenScroll.datas'
-            [attr.key]='dataMugenScroll.key(data)'>
-            <div>
-                {{data.id}}: {{data.name}}
-            </div>
-            <div>
-                {{data.createdAt*1000|date:"full"}}
-            </div>
-            <div>
-                {{data.message}}
-            </div>
-        </div>
-        <div class='bottom-data-list' #bottomDataList></div>
-    </div>
-</div>
+    <div libMugenScrollBottom class='bottom'></div>
+</lib-ngx-mugen-scroll>

@@ -1,9 +1,49 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Cursor, CursorStoreService, MugenScroll, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
-import { Data } from '../data';
-import { DataProviderImplAsc } from '../data-provider';
-import { Group } from '../group';
-import { GroupProviderServiceImplDesc } from '../group-provider.service';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Cursor, CursorStoreInfo, CursorStoreService, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
+
+interface Data {
+  createdAt: number;
+  message: string;
+}
+
+class Provider {
+  scrollId = 'demo1';
+  private at: number;
+  constructor() {
+    this.at = Date.now() / 1000;
+  }
+  newCursor(data: Data): Cursor {
+    return new Cursor([data.createdAt]);
+  }
+  async fetchBottom(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
+    const r = [];
+    for (let i = 0; i < n; i++) {
+      r.push({ message: 'hello', createdAt: (cursor.getItem(0) as number) - i });
+    }
+    return r;
+  }
+  async fetchTop(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
+    const r = [];
+    for (let i = 0; i < n; i++) {
+      r.push({ message: 'hello', createdAt: (cursor.getItem(0) as number) + i });
+    }
+    return r;
+  }
+  async fetchOnLoad(info: CursorStoreInfo): Promise<Array<Data>> {
+    const r = [];
+    for (let i = 0; i < info.n; i++) {
+      r.push({ message: 'hello', createdAt: (info.bottomCursor.getItem(0) as number) + i });
+    }
+    return r;
+  }
+  async fetchOnInit(n: number): Promise<Array<Data>> {
+    return await this.fetchBottom(
+      this.newCursor({ createdAt: Date.now() / 1000, message: '' }),
+      n,
+      true,
+    );
+  }
+}
 
 @Component({
   selector: 'app-demo1',
@@ -12,114 +52,19 @@ import { GroupProviderServiceImplDesc } from '../group-provider.service';
 })
 export class Demo1Component implements OnInit, AfterViewInit {
 
-  @ViewChild('parentGroupList')
-  public groupElParent: ElementRef | undefined;
-  @ViewChild('topGroupList')
-  public groupElTop: ElementRef | undefined;
-  @ViewChild('bottomGroupList')
-  public groupElBottom: ElementRef | undefined;
-  public groupMugenScroll: MugenScroll<Group>;
-  private groupProvider: GroupProviderServiceImplDesc;
-  private currentGroup: Group | undefined;
-
-  @ViewChild('parentDataList')
-  public dataElParent: ElementRef | undefined;
-  @ViewChild('topDataList')
-  public dataElTop: ElementRef | undefined;
-  @ViewChild('bottomDataList')
-  public dataElBottom: ElementRef | undefined;
-  public dataMugenScroll: MugenScroll<Data>;
-  private dataProvider: DataProviderImplAsc;
+  public provider: Provider;
 
   constructor(
     base: OrderedDataStoreIdxService,
     cursorStoreService: CursorStoreService,
   ) {
-    this.groupProvider = new GroupProviderServiceImplDesc(base);
-    this.groupMugenScroll = new MugenScroll<Group>(
-      this.groupProvider,
-      cursorStoreService,
-    );
-    this.groupMugenScroll.event.subscribe(ev => {
-      if (ev.type === 'onTop') {
-        this.groupMugenScroll.fetchTop();
-      }
-      if (ev.type === 'onBottom') {
-        this.groupMugenScroll.fetchBottom();
-      }
-    });
-
-    this.dataProvider = new DataProviderImplAsc(base);
-    this.dataMugenScroll = new MugenScroll<Data>(
-      this.dataProvider,
-      cursorStoreService,
-    );
-    this.dataMugenScroll.event.subscribe(ev => {
-      if (ev.type === 'onTop') {
-        this.dataMugenScroll.fetchTop();
-      }
-      if (ev.type === 'onBottom') {
-        this.dataMugenScroll.fetchBottom();
-      }
-    });
+    this.provider = new Provider();
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    if (!this.groupElParent) {
-      console.error(`groupElParent is undefined`);
-      return;
-    }
-    if (!this.groupElBottom) {
-      console.error(`groupElBottom is undefined`);
-      return;
-    }
-    if (!this.groupElTop) {
-      console.error(`groupElTop is undefined`);
-      return;
-    }
-    this.groupMugenScroll.initElements({
-      elParent: this.groupElParent.nativeElement,
-      elBottom: this.groupElBottom.nativeElement,
-      elTop: this.groupElTop.nativeElement,
-    });
-    this.groupMugenScroll.initEdgeDetector();
-    this.groupMugenScroll.load('demo1', { initScrollBottom: false, });
-
-    if (!this.dataElParent) {
-      console.error(`dataElParent is undefined`);
-      return;
-    }
-    if (!this.dataElBottom) {
-      console.error(`dataElBottom is undefined`);
-      return;
-    }
-    if (!this.dataElTop) {
-      console.error(`dataElTop is undefined`);
-      return;
-    }
-    this.dataMugenScroll.initElements({
-      elParent: this.dataElParent.nativeElement,
-      elBottom: this.dataElBottom.nativeElement,
-      elTop: this.dataElTop.nativeElement,
-    });
-    this.dataMugenScroll.initEdgeDetector();
   }
 
-  async clickGroup(group: Group): Promise<void> {
-    if (this.currentGroup !== undefined) {
-      this.dataMugenScroll.save(`group-${this.currentGroup.id}-${this.currentGroup.name}`);
-    }
-    this.currentGroup = group;
-    this.dataProvider.currentGroupId = group.id;
-    this.dataMugenScroll.clearDatas();
-    await this.dataMugenScroll.load(
-      `group-${group.id}-${group.name}`,
-      {
-        initScrollBottom: true,
-      },
-    );
-  }
 }
