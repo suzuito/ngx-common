@@ -26,3 +26,11 @@ npm run start-demo1
 ```bash
 npm run test-lib
 ```
+
+### Publish
+
+```bash
+ng build ngx-mugen-scroll --prod
+cd dist/ngx-mugen-scroll
+npm publish
+```

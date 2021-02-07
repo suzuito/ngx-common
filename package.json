@@ -1,10 +1,11 @@
 {
   "name": "ngx-mugen-scroll",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start-demo1": "ng serve demo1",
     "build-lib": "ng build ngx-mugen-scroll --watch",
+    "build-dist": "ng build ngx-mugen-scroll --prod",
     "test-lib": "ng test ngx-mugen-scroll",
     "lint": "ng lint",
     "e2e": "ng e2e"
