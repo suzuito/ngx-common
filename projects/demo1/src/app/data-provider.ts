@@ -25,6 +25,9 @@ export class DataProviderImplAsc implements DataProvider<Data> {
     ) {
         this.currentGroupId = '';
     }
+    get scrollId(): string {
+        return `datas-of-${this.currentGroupId}`;
+    }
     newCursor(v: Data): Cursor {
         return new Cursor([v.groupId, v.createdAt, v.id]);
     }
@@ -75,6 +78,7 @@ export class DataProviderImplAsc implements DataProvider<Data> {
             new Cursor([this.currentGroupId, Date.now() / 1000, '']),
             n,
             true,
+            new Cursor([this.currentGroupId, 0, '']),
         );
     }
 

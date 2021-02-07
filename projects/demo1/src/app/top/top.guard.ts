@@ -26,10 +26,10 @@ export class TopGuard implements CanActivate {
       ],
     );
     await this.dataStoreIdx.clearAll();
-    const groups = generateGroupsAtRandom(100);
+    const groups = generateGroupsAtRandom(5);
     const datas: Array<Data> = [];
     groups.forEach(group => {
-      datas.push(...generateDatasAtRandom(group.id, 100));
+      datas.push(...generateDatasAtRandom(group.id, 1000));
     });
     const providerGroups = new GroupProviderServiceImplDesc(this.dataStoreIdx);
     const providerDatas = new DataProviderImplAsc(this.dataStoreIdx);

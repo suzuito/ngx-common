@@ -20,6 +20,9 @@ export class GroupProviderServiceImplDesc implements DataProvider<Group> {
   constructor(
     private base: OrderedDataStoreIdxService,
   ) { }
+  get scrollId(): string {
+    return `groups`;
+  }
   newCursor(v: Group): Cursor {
     return new Cursor([v.id, v.name]);
   }

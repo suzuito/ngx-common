@@ -1,0 +1,69 @@
+.main {
+    border: 3px solid black;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 60px;
+    width: 600px;
+    top: 60px;
+    bottom: 60px;
+}
+
+.groups-top {
+    border: 3px solid blue;
+    box-sizing: border-box;
+
+    height: 50px;
+}
+
+.groups-bottom {
+    border: 3px solid blue;
+    box-sizing: border-box;
+
+    height: 50px;
+}
+
+.groups {
+    border: 3px solid red;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 0px;
+    width: 200px;
+    top: 0px;
+    bottom: 0px;
+
+    overflow: scroll;
+}
+
+
+.datas-top {
+    border: 3px solid blue;
+    box-sizing: border-box;
+
+    height: 50px;
+}
+
+.datas-bottom {
+    border: 3px solid blue;
+    box-sizing: border-box;
+
+    height: 50px;
+}
+
+.datas {
+    border: 3px solid red;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 200px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+
+    overflow: scroll;
+}
+

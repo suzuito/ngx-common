@@ -1,0 +1,20 @@
+<div class='main'>
+    <lib-ngx-mugen-scroll class='groups' [provider]='groupProvider'>
+        <div libMugenScrollTop class='groups-top'></div>
+        <div *libMugenScrollData='let group = data' style='padding: 6px;' (click)='clickGroup(group)'>
+            <div>id={{group.id}}</div>
+            <div>name={{group.name}}</div>
+        </div>
+        <div libMugenScrollBottom class='groups-bottom'></div>
+    </lib-ngx-mugen-scroll>
+    <lib-ngx-mugen-scroll #dataMugenScroll class='datas' [provider]='dataProvider' [scrollBottomOnInit]='true'>
+        <div libMugenScrollTop class='datas-top'></div>
+        <div *libMugenScrollData='let data = data' style='padding: 6px;' (click)='clickData(data)'>
+            <div>id={{data.id}}</div>
+            <div>name={{data.name}}</div>
+            <div>created_at_datetime_format={{data.createdAt*1000 | date:"full"}}</div>
+            <div>created_at={{data.createdAt}}</div>
+        </div>
+        <div libMugenScrollBottom class='datas-bottom'></div>
+    </lib-ngx-mugen-scroll>
+</div>

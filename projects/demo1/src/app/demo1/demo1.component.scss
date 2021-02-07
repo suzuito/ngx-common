@@ -1,67 +1,44 @@
-.main {
+.stream1 {
     border: 3px solid black;
     box-sizing: border-box;
 
     position: absolute;
 
     left: 60px;
-    width: 600px;
+    width: 300px;
     top: 60px;
     bottom: 60px;
 
     overflow: scroll;
 }
 
-.main-group-list {
-    border: 3px solid red;
+.stream2 {
+    border: 3px solid black;
     box-sizing: border-box;
+
     position: absolute;
-    left: 0px;
-    width: 200px;
-    height: 100%;
+
+    left: 420px;
+    width: 300px;
+    top: 60px;
+    bottom: 60px;
 
     overflow: scroll;
 }
 
-.top-group-list {
-    height: 100px;
-}
-
-.bottom-group-list {
-    height: 100px;
-}
-
-.data-group-list {
-    border: 3px solid black;
+.top {
+    border: 3px solid blue;
     box-sizing: border-box;
-
-    position: relative;
-
-    cursor: pointer;
-
-    padding: 6px;
+    height: 100px;
 }
 
-.main-data-list {
+.bottom {
+    border: 3px solid blue;
+    box-sizing: border-box;
+    height: 100px;
+}
+
+.data {
     border: 3px solid red;
-    box-sizing: border-box;
-    position: absolute;
-    left: 200px;
-    right: 0px;
-    height: 100%;
-
-    overflow: scroll;
-}
-
-.top-data-list {
-    height: 100px;
-}
-
-.bottom-data-list {
-    height: 100px;
-}
-
-.data-data-list {
-    border: 3px solid black;
     box-sizing: border-box;
 }
