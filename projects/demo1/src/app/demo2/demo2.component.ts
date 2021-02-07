@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { OrderedDataStoreIdxService, ScrollBottomEvent, ScrollTopEvent } from 'ngx-mugen-scroll';
+import { NgxMugenScrollComponent, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
+import { Data } from '../data';
+import { DataProviderImplAsc } from '../data-provider';
+import { Group } from '../group';
 import { GroupProviderServiceImplDesc } from '../group-provider.service';
 
 @Component({
@@ -10,21 +13,33 @@ import { GroupProviderServiceImplDesc } from '../group-provider.service';
 export class Demo2Component implements OnInit {
 
   public groupProvider: GroupProviderServiceImplDesc;
+  public dataProvider: DataProviderImplAsc;
+
+  @ViewChild('dataMugenScroll')
+  public dataMugenScroll: NgxMugenScrollComponent | undefined;
 
   constructor(
     base: OrderedDataStoreIdxService,
   ) {
     this.groupProvider = new GroupProviderServiceImplDesc(base);
+    this.dataProvider = new DataProviderImplAsc(base);
   }
 
   ngOnInit(): void {
   }
 
-  groupOnBottom(ev: ScrollBottomEvent): void {
-    console.log(ev);
+  clickGroup(group: Group): void {
+    if (this.dataMugenScroll === undefined) {
+      throw new Error('dataMugenScroll component is not found');
+    }
+    console.log(group);
+    this.dataMugenScroll.saveScrollPosition();
+    this.dataProvider.currentGroupId = group.id;
+    this.dataMugenScroll.init();
   }
-  groupOnTop(ev: ScrollTopEvent): void {
-    console.log(ev);
+
+  clickData(data: Data): void {
+    console.log(data);
   }
 
 }

@@ -3,6 +3,7 @@ import { Cursor } from './cursor';
 import { CursorStoreInfo, CursorStoreService } from './cursor-store.service';
 
 export interface DataProvider<T> {
+    scrollId: string;
     fetchBottom(
         cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<T>>;
     fetchTop(

@@ -1,4 +1,4 @@
-import { Directive, EmbeddedViewRef, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, ElementRef, EmbeddedViewRef, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Cursor } from './cursor';
 
 interface Ctx {
@@ -14,10 +14,7 @@ export class MugenScrollDataDirective {
   public bottom: object | undefined;
   public top: object | undefined;
 
-  @Input()
   public max: number;
-
-  @Input()
   public newCursor: (v: object) => Cursor;
 
   constructor(
@@ -27,6 +24,17 @@ export class MugenScrollDataDirective {
     this.datasMap = new Map<string, object>();
     this.max = 100;
     this.newCursor = (v: object) => new Cursor([v.toString()]);
+  }
+
+  clear(): void {
+    this.viewContainer.clear();
+    this.top = undefined;
+    this.bottom = undefined;
+    this.datasMap.clear();
+  }
+
+  get length(): number {
+    return this.viewContainer.length;
   }
 
   push(...datas: Array<object>): void {
@@ -41,6 +49,7 @@ export class MugenScrollDataDirective {
       const ctx: Ctx = { data };
       const r = this.viewContainer.createEmbeddedView(this.template, ctx);
       r.rootNodes[0].setAttribute('_cursor', this.newCursor(data));
+      r.detectChanges(); // Wait until data is attached???
       this.datasMap.set(cursor.toString(), data);
       this.bottom = data;
     });
@@ -59,6 +68,7 @@ export class MugenScrollDataDirective {
       const ctx: Ctx = { data };
       const r = this.viewContainer.createEmbeddedView(this.template, ctx, 0);
       r.rootNodes[0].setAttribute('_cursor', this.newCursor(data));
+      r.detectChanges(); // Wait until data is attached???
       this.datasMap.set(cursor.toString(), data);
       this.top = data;
     });
