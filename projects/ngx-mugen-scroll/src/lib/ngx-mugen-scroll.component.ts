@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MugenScrollTopDirective } from './mugen-scroll-top.directive';
 import { MugenScrollBottomDirective } from './mugen-scroll-bottom.directive';
-import { DataProvider, MugenScroll } from './mugen-scroll';
+import { DataProvider } from './mugen-scroll';
 import { CursorStoreService } from './cursor-store.service';
 import { MugenScrollDataDirective } from './mugen-scroll-data.directive';
 
