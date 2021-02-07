@@ -6,6 +6,7 @@
     "start-demo1": "ng serve demo1",
     "build-lib": "ng build ngx-mugen-scroll --watch",
     "build-dist": "ng build ngx-mugen-scroll --prod",
+    "test-ci": "ng test ngx-mugen-scroll --watch=false --browsers=ChromeHeadlessCustom --code-coverage",
     "test-lib": "ng test ngx-mugen-scroll",
     "lint": "ng lint",
     "e2e": "ng e2e",
