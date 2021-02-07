@@ -1,8 +1,22 @@
-<lib-ngx-mugen-scroll class='main' [provider]='provider'>
+<lib-ngx-mugen-scroll class='stream1' [provider]='provider1'>
     <div libMugenScrollTop class='top'></div>
-    <div *libMugenScrollData='let data = data' style='padding: 6px;'>
-        <div>{{data.createdAt * 1000 | date:"full"}}</div>
+    <div *libMugenScrollData='let data = data' class='data'>
+        <div>{{data.index}}</div>
         <div>{{data.message}}</div>
     </div>
     <div libMugenScrollBottom class='bottom'></div>
+</lib-ngx-mugen-scroll>
+
+<lib-ngx-mugen-scroll #mugenScroll2 class='stream2' [provider]='provider2' [autoFetchingBottom]='false'
+    [autoFetchingTop]='false'>
+    <div libMugenScrollTop class='top'>
+        <button (click)='clickReadMoreTop()'>Read more ...</button>
+    </div>
+    <div *libMugenScrollData='let data = data' class='data'>
+        <div>{{data.index}}</div>
+        <div>{{data.message}}</div>
+    </div>
+    <div libMugenScrollBottom class='bottom'>
+        <button (click)='clickReadMoreBottom()'>Read more ...</button>
+    </div>
 </lib-ngx-mugen-scroll>

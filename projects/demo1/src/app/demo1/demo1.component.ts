@@ -1,44 +1,59 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { Cursor, CursorStoreInfo, CursorStoreService, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Cursor, CursorStoreInfo, CursorStoreService, NgxMugenScrollComponent, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
+import { rndText } from '../text';
 
 interface Data {
-  createdAt: number;
+  index: number;
   message: string;
 }
 
+function getDataAtRandom(index: number): Data {
+  return {
+    message: rndText.getText(index),
+    index,
+  };
+}
+
 class Provider {
-  scrollId = 'demo1';
-  private at: number;
-  constructor() {
-    this.at = Date.now() / 1000;
+  constructor(public scrollId: string) {
   }
   newCursor(data: Data): Cursor {
-    return new Cursor([data.createdAt]);
+    return new Cursor([data.index]);
   }
   async fetchBottom(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
     const r = [];
     for (let i = 0; i < n; i++) {
-      r.push({ message: 'hello', createdAt: (cursor.getItem(0) as number) - i });
+      if (includeEqual === false && i === 0) {
+        continue;
+      }
+      r.push(getDataAtRandom((cursor.getItem(0) as number) + i));
     }
     return r;
   }
   async fetchTop(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
     const r = [];
     for (let i = 0; i < n; i++) {
-      r.push({ message: 'hello', createdAt: (cursor.getItem(0) as number) + i });
+      if (includeEqual === false && i === 0) {
+        continue;
+      }
+      const index = (cursor.getItem(0) as number) - i;
+      if (index < 0) {
+        break;
+      }
+      r.unshift(getDataAtRandom(index));
     }
     return r;
   }
   async fetchOnLoad(info: CursorStoreInfo): Promise<Array<Data>> {
     const r = [];
     for (let i = 0; i < info.n; i++) {
-      r.push({ message: 'hello', createdAt: (info.bottomCursor.getItem(0) as number) + i });
+      r.push(getDataAtRandom((info.bottomCursor.getItem(0) as number) + i));
     }
     return r;
   }
   async fetchOnInit(n: number): Promise<Array<Data>> {
     return await this.fetchBottom(
-      this.newCursor({ createdAt: Date.now() / 1000, message: '' }),
+      this.newCursor({ index: 0, message: '' }),
       n,
       true,
     );
@@ -52,13 +67,15 @@ class Provider {
 })
 export class Demo1Component implements OnInit, AfterViewInit {
 
-  public provider: Provider;
+  public provider1: Provider;
+  public provider2: Provider;
 
-  constructor(
-    base: OrderedDataStoreIdxService,
-    cursorStoreService: CursorStoreService,
-  ) {
-    this.provider = new Provider();
+  @ViewChild('mugenScroll2')
+  public mugenScroll2: NgxMugenScrollComponent | undefined;
+
+  constructor() {
+    this.provider1 = new Provider('stream1');
+    this.provider2 = new Provider('stream2');
   }
 
   ngOnInit(): void {
@@ -67,4 +84,11 @@ export class Demo1Component implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
   }
 
+  clickReadMoreTop(): void {
+    this.mugenScroll2?.fetchTop();
+  }
+
+  clickReadMoreBottom(): void {
+    this.mugenScroll2?.fetchBottom();
+  }
 }
