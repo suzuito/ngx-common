@@ -6,6 +6,8 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 
 The infinite scroll library for AngularJS.
 
+[API references](https://suzuito.github.io/ngx-mugen-scroll/)
+
 ## Example use
 
 You need to import `NgxMugenScrollModule`.
