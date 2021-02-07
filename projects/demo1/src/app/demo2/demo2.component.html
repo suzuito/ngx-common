@@ -1,0 +1,8 @@
+<lib-ngx-mugen-scroll class='main' [provider]='groupProvider' (bottom)='groupOnBottom($event)'
+    (top)='groupOnTop($event)'>
+    <div libMugenScrollTop style='height: 100px;'></div>
+    <div *libMugenScrollData='let data = data' style='border: 0px solid red;'>
+        {{data.id}}
+    </div>
+    <div libMugenScrollBottom>bbb</div>
+</lib-ngx-mugen-scroll>

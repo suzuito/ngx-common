@@ -10,8 +10,8 @@ export function generateGroupsAtRandom(
     const r = [];
     for (let i = 0; i < n; i++) {
         r.push({
-            id: `group-${i}`,
-            name: `グループ-${i}`,
+            id: `group-${10000 + i}`,
+            name: `グループ-${10000 + i}`,
         });
     }
     return r;

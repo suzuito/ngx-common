@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { NgxMugenScrollModule } from 'ngx-mugen-scroll';
 import { Demo1Component } from './demo1/demo1.component';
 import { TopComponent } from './top/top.component';
+import { Demo2Component } from './demo2/demo2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     Demo1Component,
     TopComponent,
+    Demo2Component,
   ],
   imports: [
     BrowserModule,
