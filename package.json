@@ -9,7 +9,7 @@
     "test-lib": "ng test ngx-mugen-scroll",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compodoc": "npx compodoc -p projects/ngx-mugen-scroll/tsconfig.lib.json projects/ngx-mugen-scroll/src"
+    "compodoc": "npx compodoc -d docs -p projects/ngx-mugen-scroll/tsconfig.lib.json projects/ngx-mugen-scroll/src"
   },
   "dependencies": {
     "@angular/animations": "~11.0.0",
