@@ -38,6 +38,5 @@ npm run start-docs
 ### Publish
 
 ```bash
-cd projects/ngx-mugen-scroll && npm version prerelease && cd -
 npm run build-dist && cd dist/ngx-mugen-scroll && npm publish --tag beta
 ```
