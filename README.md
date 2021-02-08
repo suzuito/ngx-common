@@ -30,7 +30,7 @@ npm run test-lib
 ### Doc
 
 ```bash
-
+npm run start-docs
 ```
 
 ### Publish
@@ -38,5 +38,5 @@ npm run test-lib
 ```bash
 npm run build-dist
 cd dist/ngx-mugen-scroll
-npm publish
+npm publish --tag beta
 ```
