@@ -1,3 +1,5 @@
+![npm (tag)](https://img.shields.io/npm/v/ngx-mugen-scroll/latest)
+
 The infinite scroll library for AngularJS
 
 # NgxMugenScroll
