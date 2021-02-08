@@ -9,6 +9,7 @@
 
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/material.css">
     </head>
     <body>
 
@@ -44,9 +45,6 @@
         </li>
         <li >
             <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
-        </li>
-        <li >
-            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
         </li>
 </ul>
 
@@ -113,33 +111,6 @@
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <h6><b>Properties</b></h6>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="col-md-4">
-                        <ul class="index-list">
-                            <li>
-                                    <span class="modifier">Public</span>
-                                <a href="#bottomDirective">bottomDirective</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Public</span>
-                                <a href="#dataDirective">dataDirective</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#intersectionObserver">intersectionObserver</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Public</span>
-                                <a href="#topDirective">topDirective</a>
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
 
                 <tr>
                     <td class="col-md-4">
@@ -161,22 +132,7 @@
                                 <a href="#init">init</a>
                             </li>
                             <li>
-                                    <span class="modifier">Async</span>
-                                <a href="#ngAfterViewInit">ngAfterViewInit</a>
-                            </li>
-                            <li>
-                                <a href="#ngOnInit">ngOnInit</a>
-                            </li>
-                            <li>
                                 <a href="#saveScrollPosition">saveScrollPosition</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#scrollBottom">scrollBottom</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#scrollTopAt">scrollTopAt</a>
                             </li>
                         </ul>
                     </td>
@@ -239,66 +195,6 @@
     </table>
 </section>
 
-    <section>
-    <h3 id="constructor">Constructor</h3>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-<code>constructor(el: <a href="https://angular.io/api/core/ElementRef" target="_blank">ElementRef</a>, cursorStoreService: <a href="../injectables/CursorStoreService.html">CursorStoreService</a>)</code>
-                    </td>
-                </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:57</a></div>
-                            </td>
-                        </tr>
-
-                <tr>
-                    <td class="col-md-4">
-                            <div>
-                                    <b>Parameters :</b>
-                                    <table class="params">
-                                        <thead>
-                                            <tr>
-                                                <td>Name</td>
-                                                    <td>Type</td>
-                                                <td>Optional</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                                <tr>
-                                                        <td>el</td>
-                                                  
-                                                        <td>
-                                                                        <code><a href="https://angular.io/api/core/ElementRef" target="_blank" >ElementRef</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
-                                                <tr>
-                                                        <td>cursorStoreService</td>
-                                                  
-                                                        <td>
-                                                                        <code><a href="../injectables/CursorStoreService.html" target="_self" >CursorStoreService</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
-                                        </tbody>
-                                    </table>
-                            </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-</section>
 
     <section>
     <h3 id="inputs">Inputs</h3>
@@ -318,9 +214,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:43</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:59</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Whether the data is fetched automatically when scrolled to bottom.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -339,9 +241,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:46</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:65</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Whether the data is fetched automatically when scrolled to top.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -360,9 +268,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:49</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:71</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Whether the scroll position is loaded automatically.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -381,9 +295,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:40</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:53</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>The number of data fetched by provider when new data is requested.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -402,9 +322,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="31" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:31</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:34</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Provider of stream data</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -423,9 +349,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:37</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:47</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Whether scroll to bottom or not when stream is displayed initially.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -444,9 +376,16 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:34</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:41</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Unique id of stream.
+This id is used to save scroll position.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
 </section>
@@ -468,9 +407,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:52</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="77" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:77</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Event emitted when scrolled to bottom.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-sm table-bordered">
@@ -489,9 +434,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="55" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:55</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="83" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:83</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Event emitted when scrolled to top.</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
 </section>
@@ -526,14 +477,17 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="186"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:186</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="234"
+                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:234</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Fetch data and appended to bottom.
+The data is provided by <code>fetchBottom</code> method of the <code>provider</code>.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
@@ -567,14 +521,17 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="204"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:204</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="256"
+                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:256</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Fetch data and appended to top.
+The data is provided by <code>fetchTop</code> method of the <code>provider</code>.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
@@ -606,94 +563,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="80"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:80</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="120"
+                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:120</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="ngAfterViewInit"></a>
-                    <span class="name">
-                        <b>
-                            <span class="modifier">Async</span>
-                            ngAfterViewInit
-                        </b>
-                        <a href="#ngAfterViewInit"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>ngAfterViewInit()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="76"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:76</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="ngOnInit"></a>
-                    <span class="name">
-                        <b>
-                            ngOnInit
-                        </b>
-                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-<code>ngOnInit()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="73"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:73</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
+                    <div class="io-description"><p>Initialize stream. This method is also called in <code>ngAfterViewInit</code>.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -725,14 +604,17 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="160"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:160</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="204"
+                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:204</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Save current scroll position.
+Scroll position is saved on memory and related to <code>uniqId</code>.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -742,264 +624,6 @@
             </tr>
         </tbody>
     </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="scrollBottom"></a>
-                    <span class="name">
-                        <b>
-                            <span class="modifier">Private</span>
-                            scrollBottom
-                        </b>
-                        <a href="#scrollBottom"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>scrollBottom()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="258"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:258</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="scrollTopAt"></a>
-                    <span class="name">
-                        <b>
-                            <span class="modifier">Private</span>
-                            scrollTopAt
-                        </b>
-                        <a href="#scrollTopAt"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>scrollTopAt(at: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank">object</a>)</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="224"
-                            class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:224</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Parameters :</b>
-                        <table class="params">
-                            <thead>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Type</td>
-                                    <td>Optional</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>at</td>
-                                    <td>
-                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
-                                    </td>
-
-                                    <td>
-                                        No
-                                    </td>
-
-
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                    </div>
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                    <div class="io-description">
-                        
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</section>
-    <section>
-    
-        <h3 id="inputs">
-            Properties
-        </h3>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="bottomDirective"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Public</span>
-                            bottomDirective</b>
-                            <a href="#bottomDirective"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>    <code>MugenScrollBottomDirective | undefined</code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <b>Decorators : </b>
-                            <br />
-                            <code>
-                                @ContentChild(MugenScrollBottomDirective)<br />
-                            </code>
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:22</a></div>
-                            </td>
-                        </tr>
-
-
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="dataDirective"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Public</span>
-                            dataDirective</b>
-                            <a href="#dataDirective"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>    <code>MugenScrollDataDirective | undefined</code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <b>Decorators : </b>
-                            <br />
-                            <code>
-                                @ContentChild(MugenScrollDataDirective)<br />
-                            </code>
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:28</a></div>
-                            </td>
-                        </tr>
-
-
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="intersectionObserver"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Private</span>
-                            intersectionObserver</b>
-                            <a href="#intersectionObserver"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>    <code>IntersectionObserver | undefined</code>
-
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:57</a></div>
-                            </td>
-                        </tr>
-
-
-            </tbody>
-        </table>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-                        <a name="topDirective"></a>
-                        <span class="name">
-                            <b>
-                                <span class="modifier">Public</span>
-                            topDirective</b>
-                            <a href="#topDirective"><span class="icon ion-ios-link"></span></a>
-                        </span>
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <i>Type : </i>    <code>MugenScrollTopDirective | undefined</code>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col-md-4">
-                            <b>Decorators : </b>
-                            <br />
-                            <code>
-                                @ContentChild(MugenScrollTopDirective)<br />
-                            </code>
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/lib/ngx-mugen-scroll.component.ts:25</a></div>
-                            </td>
-                        </tr>
-
-
-            </tbody>
-        </table>
 </section>
 
 </div>
@@ -1027,43 +651,74 @@ export interface ScrollTopEvent { }
 export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
 
   @ContentChild(MugenScrollBottomDirective)
-  public bottomDirective: MugenScrollBottomDirective | undefined;
+  private bottomDirective: MugenScrollBottomDirective | undefined;
 
   @ContentChild(MugenScrollTopDirective)
-  public topDirective: MugenScrollTopDirective | undefined;
+  private topDirective: MugenScrollTopDirective | undefined;
 
   @ContentChild(MugenScrollDataDirective)
-  public dataDirective: MugenScrollDataDirective | undefined;
+  private dataDirective: MugenScrollDataDirective | undefined;
 
+  /**
+   * Provider of stream data
+   */
   @Input()
   public provider: DataProvider&lt;object&gt; | undefined;
 
+  /**
+   * Unique id of stream.
+   * This id is used to save scroll position.
+   */
   @Input()
   public uniqId: string;
 
+  /**
+   * Whether scroll to bottom or not when stream is displayed initially.
+   */
   @Input()
   public scrollBottomOnInit: boolean;
 
+  /**
+   * The number of data fetched by provider when new data is requested.
+   */
   @Input()
   public countPerLoad: number;
 
+  /**
+   * Whether the data is fetched automatically when scrolled to bottom.
+   */
   @Input()
   public autoFetchingBottom: boolean;
 
+  /**
+   * Whether the data is fetched automatically when scrolled to top.
+   */
   @Input()
   public autoFetchingTop: boolean;
 
+  /**
+   * Whether the scroll position is loaded automatically.
+   */
   @Input()
   public autoLoadScrollPosition: boolean;
 
+  /**
+   * Event emitted when scrolled to bottom.
+   */
   @Output()
   public bottom: EventEmitter&lt;ScrollBottomEvent&gt;;
 
+  /**
+   * Event emitted when scrolled to top.
+   */
   @Output()
   public top: EventEmitter&lt;ScrollTopEvent&gt;;
 
   private intersectionObserver: IntersectionObserver | undefined;
 
+  /**
+   * @ignore
+   */
   constructor(
     private el: ElementRef,
     private cursorStoreService: CursorStoreService,
@@ -1078,13 +733,22 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.autoLoadScrollPosition &#x3D; true;
   }
 
+  /**
+   * @ignore
+   */
   ngOnInit(): void {
   }
 
+  /**
+   * @ignore
+   */
   async ngAfterViewInit(): Promise&lt;void&gt; {
     this.init();
   }
 
+  /**
+   * Initialize stream. This method is also called in &#x60;ngAfterViewInit&#x60;.
+   */
   init(): void {
     // Validate current state
     if (this.bottomDirective &#x3D;&#x3D;&#x3D; undefined) {
@@ -1165,6 +829,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Save current scroll position.
+   * Scroll position is saved on memory and related to &#x60;uniqId&#x60;.
+   */
   saveScrollPosition(): void {
     if (this.provider &#x3D;&#x3D;&#x3D; undefined) {
       console.error(&#x27;provider is undefined in ng-content&#x27;);
@@ -1191,6 +859,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     );
   }
 
+  /**
+   * Fetch data and appended to bottom.
+   * The data is provided by &#x60;fetchBottom&#x60; method of the &#x60;provider&#x60;.
+   */
   async fetchBottom(): Promise&lt;void&gt; {
     if (this.provider &#x3D;&#x3D;&#x3D; undefined) {
       throw new Error(&#x27;provider is undefined in ng-content&#x27;);
@@ -1209,6 +881,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.dataDirective.push(...datas);
   }
 
+  /**
+   * Fetch data and appended to top.
+   * The data is provided by &#x60;fetchTop&#x60; method of the &#x60;provider&#x60;.
+   */
   async fetchTop(): Promise&lt;void&gt; {
     if (this.provider &#x3D;&#x3D;&#x3D; undefined) {
       throw new Error(&#x27;provider is undefined in ng-content&#x27;);
@@ -1272,23 +948,6 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
 
 
 
-    <div class="tab-pane fade " id="c-tree">
-        <div id="tree-container"></div>
-        <div class="tree-legend">
-            <div class="title">
-                <b>Legend</b>
-            </div>
-            <div>
-                <div class="color htmlelement"></div><span>Html element</span>
-            </div>
-            <div>
-                <div class="color component"></div><span>Component</span>
-            </div>
-            <div>
-                <div class="color directive"></div><span>Html element with directive</span>
-            </div>
-        </div>
-    </div>
 
     
 </div>

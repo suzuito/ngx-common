@@ -9,6 +9,7 @@
 
         <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
 	      <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/material.css">
     </head>
     <body>
 
@@ -30,12 +31,15 @@
                <div class="content getting-started">
                    <div class="content-data">
 
-<p>∞</p>
+<p><img src="https://img.shields.io/npm/v/ngx-mugen-scroll/latest" alt="npm (tag)" class="img-responsive"></p>
+<p>The infinite scroll library for AngularJS</p>
 <h1 id="ngxmugenscroll">NgxMugenScroll</h1>
 <p>This library was generated with <a href="https://github.com/angular/angular-cli">Angular CLI</a> version 11.0.9.</p>
-<p>The infinite scroll library for AngularJS.</p>
-<p><a href="https://suzuito.github.io/ngx-mugen-scroll/">API references</a></p>
-<h2 id="example-use">Example use</h2>
+<ul>
+<li><a href="https://suzuito.github.io/ngx-mugen-scroll/">API references</a></li>
+<li><a href="https://stackblitz.com/edit/angular-ivy-fuk6jc">live demo1</a></li>
+</ul>
+<h1 id="set-up">Set up</h1>
 <p>You need to import <code>NgxMugenScrollModule</code>.</p>
 <div><pre class="line-numbers"><code class="language-typescript">import { NgxMugenScrollModule } from &#39;ngx-mugen-scroll&#39;;
 ...
@@ -44,7 +48,53 @@
       ...
     NgxMugenScrollModule,
       ...
-  ],</code></pre></div>
+  ],</code></pre></div><h1 id="usage">Usage</h1>
+<h2 id="overview">Overview</h2>
+<h3 id="component">Component</h3>
+<p>This library provides <a href="https://suzuito.github.io/ngx-mugen-scroll/components/NgxMugenScrollComponent.html">NgxMugenScrollComponent</a> that implements infinite scroll.</p>
+<p><code>NgxMugenScrollComponent</code> has <a href="https://suzuito.github.io/ngx-mugen-scroll/components/NgxMugenScrollComponent.html#provider">provider</a> that provides datas displayed on the component during scrolling.</p>
+<p><code>provider</code> is suitable for <a href="https://suzuito.github.io/ngx-mugen-scroll/interfaces/DataProvider.html">DataProvider</a> interface.</p>
+<p>Scroll position is saved automatically in memory. Saved position can be loaded when stream is redisplayed.</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;lib-ngx-mugen-scroll [provider]=&#39;provider&#39;&gt;
+      &lt;div libMugenScrollTop&gt;&lt;/div&gt;
+      &lt;div *libMugenScrollData=&#39;let data = data&#39;&gt;
+            &lt;div&gt;{{data.index}}&lt;/div&gt;
+            &lt;div&gt;{{data.message}}&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div libMugenScrollBottom&gt;&lt;/div&gt;
+&lt;/lib-ngx-mugen-scroll&gt;</code></pre></div><p><code>NgxMugenScrollComponent</code> must have three children.</p>
+<ul>
+<li>Top component<ul>
+<li>The component with <code>libMugenScrollTop</code> attribute represents top of the <code>NgxMugenScrollComponent</code>.</li>
+</ul>
+</li>
+<li>Bottom component<ul>
+<li>The component with <code>libMugenScrollBottom</code> attribute represents bottom of the <code>NgxMugenScrollComponent</code>.</li>
+</ul>
+</li>
+<li>Data component<ul>
+<li>The component with <code>libMugenScrollData</code> attribute represents row of the stream in <code>NgxMugenScrollComponent</code>.</li>
+<li>Local variable <code>data</code> is provided by provider specified in <code>lib-ngx-mugen-scroll</code> tag.</li>
+</ul>
+</li>
+</ul>
+<p>If <code>autoFetchingBottom</code>(<code>autoFetchingTop</code>) is set to <code>true</code> and <code>top component</code> is visible, then next data is provided by <code>provider</code> and appended to the bottom(top) of stream.</p>
+<h3 id="provider">Provider</h3>
+<p>The class implementing <code>Provider</code> interface provides data on the stream.</p>
+<p>TBD</p>
+<h3 id="scroll-position-store-feature">Scroll position store feature</h3>
+<p>TBD</p>
+<h2 id="api">API</h2>
+<ul>
+<li><a href="https://suzuito.github.io/ngx-mugen-scroll">reference docs</a></li>
+</ul>
+<h2 id="example">Example</h2>
+<h3 id="simple-infinite-scroll">Simple infinite scroll</h3>
+<p>In left stream, data is fetched automatically when stream is located to bottom(top).</p>
+<p>In Right stream, data is not fetched automatically when stream is located to bottom(top).
+When use click <code>Read more ...</code> button, the data is fetched.</p>
+<p><a href="https://stackblitz.com/edit/angular-ivy-fuk6jc">live demo1</a></p>
+
 
 
 

@@ -10,7 +10,7 @@
     "test-lib": "ng test ngx-mugen-scroll",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-docs": "cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
+    "build-docs": "rm -rf docs && cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
     "start-docs": "cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d .served-docs -s -r 4201 -w src"
   },
   "dependencies": {

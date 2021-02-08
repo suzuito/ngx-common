@@ -9,6 +9,7 @@
 
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	      <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/material.css">
     </head>
     <body>
 
@@ -139,12 +140,30 @@ interface Ctx {
 export class MugenScrollDataDirective {
 
   private datasMap: Map&lt;string, object&gt;;
+
+  /**
+   * @ignore
+   */
   public bottom: object | undefined;
+
+  /**
+   * @ignore
+   */
   public top: object | undefined;
 
+  /**
+   * @ignore
+   */
   public max: number;
+
+  /**
+   * @ignore
+   */
   public newCursor: (v: object) &#x3D;&gt; Cursor;
 
+  /**
+   * @ignore
+   */
   constructor(
     private template: TemplateRef&lt;any&gt;,
     private viewContainer: ViewContainerRef,
@@ -154,6 +173,9 @@ export class MugenScrollDataDirective {
     this.newCursor &#x3D; (v: object) &#x3D;&gt; new Cursor([v.toString()]);
   }
 
+  /**
+   * @ignore
+   */
   clear(): void {
     this.viewContainer.clear();
     this.top &#x3D; undefined;
@@ -161,10 +183,16 @@ export class MugenScrollDataDirective {
     this.datasMap.clear();
   }
 
+  /**
+   * @ignore
+   */
   get length(): number {
     return this.viewContainer.length;
   }
 
+  /**
+   * @ignore
+   */
   push(...datas: Array&lt;object&gt;): void {
     datas.forEach(data &#x3D;&gt; {
       const cursor &#x3D; this.newCursor(data);
@@ -184,6 +212,9 @@ export class MugenScrollDataDirective {
     this.arrange(true);
   }
 
+  /**
+   * @ignore
+   */
   unshift(...datas: Array&lt;object&gt;): void {
     datas.reverse().forEach(data &#x3D;&gt; {
       const cursor &#x3D; this.newCursor(data);
@@ -203,6 +234,9 @@ export class MugenScrollDataDirective {
     this.arrange(false);
   }
 
+  /**
+   * @ignore
+   */
   private arrange(deleteAtTop: boolean): void {
     if (this.viewContainer.length &lt;&#x3D; this.max) {
       return;
