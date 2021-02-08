@@ -11,12 +11,30 @@ interface Ctx {
 export class MugenScrollDataDirective {
 
   private datasMap: Map<string, object>;
+
+  /**
+   * @ignore
+   */
   public bottom: object | undefined;
+
+  /**
+   * @ignore
+   */
   public top: object | undefined;
 
+  /**
+   * @ignore
+   */
   public max: number;
+
+  /**
+   * @ignore
+   */
   public newCursor: (v: object) => Cursor;
 
+  /**
+   * @ignore
+   */
   constructor(
     private template: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
@@ -26,6 +44,9 @@ export class MugenScrollDataDirective {
     this.newCursor = (v: object) => new Cursor([v.toString()]);
   }
 
+  /**
+   * @ignore
+   */
   clear(): void {
     this.viewContainer.clear();
     this.top = undefined;
@@ -33,10 +54,16 @@ export class MugenScrollDataDirective {
     this.datasMap.clear();
   }
 
+  /**
+   * @ignore
+   */
   get length(): number {
     return this.viewContainer.length;
   }
 
+  /**
+   * @ignore
+   */
   push(...datas: Array<object>): void {
     datas.forEach(data => {
       const cursor = this.newCursor(data);
@@ -56,6 +83,9 @@ export class MugenScrollDataDirective {
     this.arrange(true);
   }
 
+  /**
+   * @ignore
+   */
   unshift(...datas: Array<object>): void {
     datas.reverse().forEach(data => {
       const cursor = this.newCursor(data);
@@ -75,6 +105,9 @@ export class MugenScrollDataDirective {
     this.arrange(false);
   }
 
+  /**
+   * @ignore
+   */
   private arrange(deleteAtTop: boolean): void {
     if (this.viewContainer.length <= this.max) {
       return;

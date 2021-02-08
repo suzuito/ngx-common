@@ -1,0 +1,9 @@
+---
+tsconfig: ./tsconfig.lib.json
+theme: material
+disablePrivate: true
+disableProtected: true
+disableInternal: true
+disableCoverage: true
+disableGraph: true
+disableDomTree: true
