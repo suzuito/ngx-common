@@ -1,8 +1,8 @@
-name: deploy-beta
+name: deploy
 on:
   push:
     tags:
-      - qa
+      - "^[0-9]+.[0-9]+.[0-9]$"
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -12,4 +12,4 @@ jobs:
         with:
           node-version: 12
       - run: npm install
-      - run: npm run build-dist && cd dist/ngx-mugen-scroll && npm publish --tag beta && cd -
+      - run: npm run build-dist && cd dist/ngx-mugen-scroll && npm publish && cd -
