@@ -19,43 +19,74 @@ export interface ScrollTopEvent { }
 export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
 
   @ContentChild(MugenScrollBottomDirective)
-  public bottomDirective: MugenScrollBottomDirective | undefined;
+  private bottomDirective: MugenScrollBottomDirective | undefined;
 
   @ContentChild(MugenScrollTopDirective)
-  public topDirective: MugenScrollTopDirective | undefined;
+  private topDirective: MugenScrollTopDirective | undefined;
 
   @ContentChild(MugenScrollDataDirective)
-  public dataDirective: MugenScrollDataDirective | undefined;
+  private dataDirective: MugenScrollDataDirective | undefined;
 
+  /**
+   * Provider of stream data
+   */
   @Input()
   public provider: DataProvider<object> | undefined;
 
+  /**
+   * Unique id of stream.
+   * This id is used to save scroll position.
+   */
   @Input()
   public uniqId: string;
 
+  /**
+   * Whether scroll to bottom or not when stream is displayed initially.
+   */
   @Input()
   public scrollBottomOnInit: boolean;
 
+  /**
+   * The number of data fetched by provider when new data is requested.
+   */
   @Input()
   public countPerLoad: number;
 
+  /**
+   * Whether the data is fetched automatically when scrolled to bottom.
+   */
   @Input()
   public autoFetchingBottom: boolean;
 
+  /**
+   * Whether the data is fetched automatically when scrolled to top.
+   */
   @Input()
   public autoFetchingTop: boolean;
 
+  /**
+   * Whether the scroll position is loaded automatically.
+   */
   @Input()
   public autoLoadScrollPosition: boolean;
 
+  /**
+   * Event emitted when scrolled to bottom.
+   */
   @Output()
   public bottom: EventEmitter<ScrollBottomEvent>;
 
+  /**
+   * Event emitted when scrolled to top.
+   */
   @Output()
   public top: EventEmitter<ScrollTopEvent>;
 
   private intersectionObserver: IntersectionObserver | undefined;
 
+  /**
+   * @ignore
+   */
   constructor(
     private el: ElementRef,
     private cursorStoreService: CursorStoreService,
@@ -70,13 +101,22 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.autoLoadScrollPosition = true;
   }
 
+  /**
+   * @ignore
+   */
   ngOnInit(): void {
   }
 
+  /**
+   * @ignore
+   */
   async ngAfterViewInit(): Promise<void> {
     this.init();
   }
 
+  /**
+   * Initialize stream. This method is also called in `ngAfterViewInit`.
+   */
   init(): void {
     // Validate current state
     if (this.bottomDirective === undefined) {
@@ -157,6 +197,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Save current scroll position.
+   * Scroll position is saved on memory and related to `uniqId`.
+   */
   saveScrollPosition(): void {
     if (this.provider === undefined) {
       console.error('provider is undefined in ng-content');
@@ -183,6 +227,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     );
   }
 
+  /**
+   * Fetch data and appended to bottom.
+   * The data is provided by `fetchBottom` method of the `provider`.
+   */
   async fetchBottom(): Promise<void> {
     if (this.provider === undefined) {
       throw new Error('provider is undefined in ng-content');
@@ -201,6 +249,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.dataDirective.push(...datas);
   }
 
+  /**
+   * Fetch data and appended to top.
+   * The data is provided by `fetchTop` method of the `provider`.
+   */
   async fetchTop(): Promise<void> {
     if (this.provider === undefined) {
       throw new Error('provider is undefined in ng-content');

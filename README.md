@@ -1,3 +1,5 @@
+![npm (tag)](https://img.shields.io/npm/v/ngx-mugen-scroll/latest)
+
 # NgxMugenScroll
 
 Inifinit scroll library for Angular
@@ -27,10 +29,14 @@ npm run start-demo1
 npm run test-lib
 ```
 
+### Doc
+
+```bash
+npm run start-docs
+```
+
 ### Publish
 
 ```bash
-npm run build-dist
-cd dist/ngx-mugen-scroll
-npm publish
+npm run build-dist && cd dist/ngx-mugen-scroll && npm publish --tag beta
 ```
