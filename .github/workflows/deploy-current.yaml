@@ -4,7 +4,7 @@ on:
     tags:
       - "^v[0-9]+.[0-9]+.[0-9]+$"
 jobs:
-  deploy-current:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
