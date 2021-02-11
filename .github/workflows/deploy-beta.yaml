@@ -1,6 +1,6 @@
 name: deploy-beta
 on:
-  create:
+  push:
     tags:
       - qa
 jobs:
