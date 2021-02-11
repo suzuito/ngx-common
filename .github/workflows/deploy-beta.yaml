@@ -3,7 +3,7 @@ on:
     tags:
       - qa
 jobs:
-  deploy:
+  deploy-beta:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
