@@ -189,7 +189,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnInit, Output, ReflectiveInjector } from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ReflectiveInjector, SimpleChanges } from &#x27;@angular/core&#x27;;
 import { MugenScrollTopDirective } from &#x27;./mugen-scroll-top.directive&#x27;;
 import { MugenScrollBottomDirective } from &#x27;./mugen-scroll-bottom.directive&#x27;;
 import { DataProvider } from &#x27;./mugen-scroll&#x27;;
@@ -212,7 +212,7 @@ class NullLogger implements Logger {
   styles: [
   ]
 })
-export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
+export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ContentChild(MugenScrollBottomDirective)
   private bottomDirective: MugenScrollBottomDirective | undefined;
@@ -244,9 +244,12 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
 
   /**
    * The number of data fetched by provider when new data is requested.
+   * If &#x27;small&#x27; then 10.
+   * If &#x27;middle&#x27; then 50.
+   * If &#x27;big&#x27; then 100.
    */
   @Input()
-  public countPerLoad: number;
+  public countPerLoadMode: &#x27;small&#x27; | &#x27;middle&#x27; | &#x27;big&#x27;;
 
   /**
    * Whether the data is fetched automatically when scrolled to bottom.
@@ -287,6 +290,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
 
   private intersectionObserver: IntersectionObserver | undefined;
   private timeoutMillisecondsAfterBinding: number;
+  private countPerLoad: number;
 
   /**
    * @ignore
@@ -305,6 +309,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.autoLoadScrollPosition &#x3D; true;
     this.timeoutMillisecondsAfterBinding &#x3D; 1;
     this.logger &#x3D; new NullLogger();
+    this.countPerLoadMode &#x3D; &#x27;small&#x27;;
+    this.setCountPerLoad();
   }
 
   /**
@@ -318,6 +324,16 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
    */
   async ngAfterViewInit(): Promise&lt;void&gt; {
     this.init();
+  }
+
+  /**
+   * @ignore
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.countPerLoadMode) {
+      this.countPerLoadMode &#x3D; changes.countPerLoadMode.currentValue;
+      this.setCountPerLoad();
+    }
   }
 
   /**
@@ -337,6 +353,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     if (this.provider &#x3D;&#x3D;&#x3D; undefined) {
       throw new Error(&#x27;provider is undefined in ng-content&#x27;);
     }
+    this.dataDirective.max &#x3D; this.countPerLoad * 3;
     // Clear previous state
     this.dataDirective.clear();
     this.dataDirective.newCursor &#x3D; this.provider.newCursor;
@@ -401,6 +418,18 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
         this.scrollBottom();
       }
     });
+  }
+
+  private setCountPerLoad(): void {
+    this.countPerLoad &#x3D; 10;
+    switch (this.countPerLoadMode) {
+      case &#x27;middle&#x27;:
+        this.countPerLoad &#x3D; 50;
+        break;
+      case &#x27;big&#x27;:
+        this.countPerLoad &#x3D; 100;
+        break;
+    }
   }
 
   /**
