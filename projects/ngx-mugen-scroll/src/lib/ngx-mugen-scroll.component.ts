@@ -225,6 +225,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       this.dataDirective.push(...datas);
       if (this.scrollBottomOnInit) {
         this.scrollBottom();
+      } else {
+        this.scrollTop();
       }
     });
   }
@@ -266,7 +268,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       this.provider.scrollId,
       this.provider.newCursor(this.dataDirective.bottom),
       this.provider.newCursor(this.dataDirective.top),
-      this.countPerLoad,
+      this.dataDirective.length,
       (this.el.nativeElement as HTMLElement).scrollTop,
     );
   }
@@ -436,5 +438,9 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
 
   private scrollBottom(): void {
     (this.el.nativeElement as HTMLElement).scroll(0, 9999999);
+  }
+
+  private scrollTop(): void {
+    (this.el.nativeElement as HTMLElement).scroll(0, 0);
   }
 }
