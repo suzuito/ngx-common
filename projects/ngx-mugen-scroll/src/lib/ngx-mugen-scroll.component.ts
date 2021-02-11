@@ -266,7 +266,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       this.provider.scrollId,
       this.provider.newCursor(this.dataDirective.bottom),
       this.provider.newCursor(this.dataDirective.top),
-      this.countPerLoad,
+      this.dataDirective.length,
       (this.el.nativeElement as HTMLElement).scrollTop,
     );
   }
