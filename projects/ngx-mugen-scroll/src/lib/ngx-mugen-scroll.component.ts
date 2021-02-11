@@ -226,7 +226,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       if (this.scrollBottomOnInit) {
         this.scrollBottom();
       } else {
-        this.scrollTopAt();
+        this.scrollTop();
       }
     });
   }
