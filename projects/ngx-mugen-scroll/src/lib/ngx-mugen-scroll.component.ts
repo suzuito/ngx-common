@@ -1,12 +1,17 @@
-import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnInit, Output, ReflectiveInjector } from '@angular/core';
 import { MugenScrollTopDirective } from './mugen-scroll-top.directive';
 import { MugenScrollBottomDirective } from './mugen-scroll-bottom.directive';
 import { DataProvider } from './mugen-scroll';
 import { CursorStoreService } from './cursor-store.service';
 import { MugenScrollDataDirective } from './mugen-scroll-data.directive';
+import { Logger } from './logger';
 
 export interface ScrollBottomEvent { }
 export interface ScrollTopEvent { }
+
+class NullLogger implements Logger {
+  info(...msgs: Array<string>): void { }
+}
 
 @Component({
   selector: 'lib-ngx-mugen-scroll',
@@ -82,7 +87,15 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
   @Output()
   public top: EventEmitter<ScrollTopEvent>;
 
+  /**
+   * @ignore
+   * Logger for debug
+   */
+  @Input()
+  public logger: Logger;
+
   private intersectionObserver: IntersectionObserver | undefined;
+  private timeoutMillisecondsAfterBinding: number;
 
   /**
    * @ignore
@@ -99,6 +112,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     this.autoFetchingBottom = true;
     this.autoFetchingTop = true;
     this.autoLoadScrollPosition = true;
+    this.timeoutMillisecondsAfterBinding = 1;
+    this.logger = new NullLogger();
   }
 
   /**
@@ -248,7 +263,17 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     );
     const bottomBeforeAdded = this.dataDirective.bottom;
     this.dataDirective.push(...datas);
-    this.scrollBottomAt(bottomBeforeAdded);
+
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          this.scrollBottomAt(bottomBeforeAdded);
+          resolve();
+        }, this.timeoutMillisecondsAfterBinding);
+      } catch (err) {
+        reject();
+      }
+    });
   }
 
   /**
@@ -272,7 +297,17 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     );
     const topBeforeAdded = this.dataDirective.top;
     this.dataDirective.unshift(...datas);
-    this.scrollTopAt(topBeforeAdded);
+
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          this.scrollTopAt(topBeforeAdded);
+          resolve();
+        }, this.timeoutMillisecondsAfterBinding);
+      } catch (err) {
+        reject();
+      }
+    });
   }
 
   private scrollTopAt(at: object): void {
@@ -331,6 +366,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
     const cursor = this.provider.newCursor(at);
     const el = this.el.nativeElement as HTMLElement;
     let u: HTMLElement | undefined;
+    const logs: Array<any> = [];
     for (let i = 0; i < el.children.length; i++) {
       const v = el.children.item(i);
       if (v === null) {
@@ -343,14 +379,30 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
         break;
       }
       s += u.offsetHeight;
+      logs.push({ element: u, offsetHeight: u.offsetHeight });
     }
     if (u === undefined) {
       return;
     }
     s -= (this.el.nativeElement as HTMLElement).clientHeight;
+    logs.push({ element: this.el.nativeElement, offsetHeight: -(this.el.nativeElement as HTMLElement).clientHeight });
     s += u.offsetHeight;
+    logs.push({ element: u, offsetHeight: u.offsetHeight });
     s += this.bottomDirective.element.offsetHeight;
+    logs.push({ element: this.bottomDirective.element, offsetHeight: this.bottomDirective.element.offsetHeight });
     el.scroll(0, s);
+
+    logs.forEach((v, i) => {
+      this.info(`i: ${i}, element: ${v.element}, offset: ${v.offsetHeight}`);
+    });
+    this.info(`scroll: ${s}`);
+  }
+
+  private info(...msgs: Array<string>): void {
+    if (this.logger === undefined) {
+      return;
+    }
+    this.logger.info(...msgs);
   }
 
   private scrollBottom(): void {

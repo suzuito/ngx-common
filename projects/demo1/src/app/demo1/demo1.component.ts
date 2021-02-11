@@ -29,12 +29,7 @@ class Provider {
       }
       r.push(getDataAtRandom((cursor.getItem(0) as number) + i));
     }
-    // return r;
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(r);
-      }, 1000);
-    });
+    return r;
   }
   async fetchTop(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
     const r = [];
@@ -83,7 +78,7 @@ export class Demo1Component implements OnInit, AfterViewInit {
   public mugenScroll1: NgxMugenScrollComponent | undefined;
 
   constructor(
-    private logger: SnackbarLoggerService,
+    public logger: SnackbarLoggerService,
   ) {
     this.provider1 = new Provider('stream1');
     this.provider2 = new Provider('stream2');

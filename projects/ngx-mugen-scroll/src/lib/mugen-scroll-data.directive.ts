@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EmbeddedViewRef, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, ElementRef, EmbeddedViewRef, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Cursor } from './cursor';
 
 interface Ctx {
@@ -36,6 +36,7 @@ export class MugenScrollDataDirective {
    * @ignore
    */
   constructor(
+    private el: ElementRef,
     private template: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
   ) {
