@@ -1,0 +1,5 @@
+<div (scroll)='debugScroll($event)' class='stream1' #stream>
+    <div class='data' id='top' #top>top</div>
+    <div class='data' *ngFor='let d of data'>{{ d.index }} = {{ d.text }}</div>
+    <div class='data' id='bottom' #bottom>bottom</div>
+</div>

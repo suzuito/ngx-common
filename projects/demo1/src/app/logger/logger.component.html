@@ -1,0 +1,4 @@
+<div *ngFor='let r of records' style='display: flex; flex-direction: row;'>
+    <div style='padding-right: 10px;'>{{r.createdAt * 1000|date:'yyyy/MM/dd HH:mm:ss':timezone}}</div>
+    <div *ngFor='let col of r.cols' style='padding-right: 10px;'>{{col}}</div>
+</div>

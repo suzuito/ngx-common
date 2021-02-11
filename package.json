@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start-demo1": "ng serve demo1",
+    "start-demo1": "ng serve demo1 --host 0.0.0.0",
     "build-lib": "ng build ngx-mugen-scroll --watch",
     "build-dist": "ng build ngx-mugen-scroll --prod",
     "test-ci": "ng test ngx-mugen-scroll --watch=false --browsers=ChromeHeadlessCustom --code-coverage",

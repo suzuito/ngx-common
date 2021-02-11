@@ -40,7 +40,7 @@ export class MugenScrollDataDirective {
     private viewContainer: ViewContainerRef,
   ) {
     this.datasMap = new Map<string, object>();
-    this.max = 100;
+    this.max = 30;
     this.newCursor = (v: object) => new Cursor([v.toString()]);
   }
 

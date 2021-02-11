@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { Record, SnackbarLoggerService } from './snackbar-logger.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'demo1';
+
+  constructor(
+    private logger: SnackbarLoggerService,
+  ) { }
+
+  clickClear(): void {
+    this.logger.clear();
+  }
 }

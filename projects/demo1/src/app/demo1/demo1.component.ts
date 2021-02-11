@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Cursor, CursorStoreInfo, CursorStoreService, NgxMugenScrollComponent, OrderedDataStoreIdxService } from 'ngx-mugen-scroll';
+import { SnackbarLoggerService } from '../snackbar-logger.service';
 import { rndText } from '../text';
 
 interface Data {
@@ -21,14 +22,19 @@ class Provider {
     return new Cursor([data.index]);
   }
   async fetchBottom(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
-    const r = [];
+    const r: Array<Data> = [];
     for (let i = 0; i < n; i++) {
       if (includeEqual === false && i === 0) {
         continue;
       }
       r.push(getDataAtRandom((cursor.getItem(0) as number) + i));
     }
-    return r;
+    // return r;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(r);
+      }, 1000);
+    });
   }
   async fetchTop(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<Data>> {
     const r = [];
@@ -73,7 +79,12 @@ export class Demo1Component implements OnInit, AfterViewInit {
   @ViewChild('mugenScroll2')
   public mugenScroll2: NgxMugenScrollComponent | undefined;
 
-  constructor() {
+  @ViewChild('mugenScroll1')
+  public mugenScroll1: NgxMugenScrollComponent | undefined;
+
+  constructor(
+    private logger: SnackbarLoggerService,
+  ) {
     this.provider1 = new Provider('stream1');
     this.provider2 = new Provider('stream2');
   }
@@ -82,6 +93,11 @@ export class Demo1Component implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.mugenScroll1 !== undefined) {
+      this.mugenScroll1.bottom.subscribe(() => {
+        this.logger.info('Fetch bottom');
+      });
+    }
   }
 
   clickReadMoreTop(): void {

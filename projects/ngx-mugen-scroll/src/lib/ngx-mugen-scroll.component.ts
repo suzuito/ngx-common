@@ -93,7 +93,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
   ) {
     this.uniqId = '';
     this.scrollBottomOnInit = false;
-    this.countPerLoad = 50;
+    this.countPerLoad = 10;
     this.bottom = new EventEmitter<ScrollBottomEvent>();
     this.top = new EventEmitter<ScrollTopEvent>();
     this.autoFetchingBottom = true;
@@ -246,7 +246,9 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
       this.countPerLoad,
       false,
     );
+    const bottomBeforeAdded = this.dataDirective.bottom;
     this.dataDirective.push(...datas);
+    this.scrollBottomAt(bottomBeforeAdded);
   }
 
   /**
@@ -304,6 +306,50 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit {
       }
       s += u.offsetHeight;
     }
+    el.scroll(0, s);
+  }
+
+  private scrollBottomAt(at: object): void {
+    if (this.provider === undefined) {
+      throw new Error('provider is undefined in ng-content');
+    }
+    if (this.dataDirective === undefined) {
+      throw new Error('MugenScrollDataDirective is undefined in ng-content');
+    }
+    if (this.dataDirective.bottom !== undefined) {
+      if (this.provider.newCursor(this.dataDirective.bottom).toString() === this.provider.newCursor(at).toString()) {
+        return;
+      }
+    }
+    if (this.topDirective === undefined) {
+      throw new Error('MugenScrollTopDirective is undefined in ng-content');
+    }
+    if (this.bottomDirective === undefined) {
+      throw new Error('MugenScrollTopDirective is undefined in ng-content');
+    }
+    let s = 0;
+    const cursor = this.provider.newCursor(at);
+    const el = this.el.nativeElement as HTMLElement;
+    let u: HTMLElement | undefined;
+    for (let i = 0; i < el.children.length; i++) {
+      const v = el.children.item(i);
+      if (v === null) {
+        continue;
+      }
+      u = v as HTMLElement;
+      const cursorRootNode = u.getAttribute('_cursor');
+      // console.log(cursorRootNode, cursor.toString(), cursorRootNode === cursor.toString());
+      if (cursorRootNode === cursor.toString()) {
+        break;
+      }
+      s += u.offsetHeight;
+    }
+    if (u === undefined) {
+      return;
+    }
+    s -= (this.el.nativeElement as HTMLElement).clientHeight;
+    s += u.offsetHeight;
+    s += this.bottomDirective.element.offsetHeight;
     el.scroll(0, s);
   }
 
