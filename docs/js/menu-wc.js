@@ -113,6 +113,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <li class="link">
                                 <a href="classes/NotFoundResourceError.html" data-type="entity-link">NotFoundResourceError</a>
                             </li>
+                            <li class="link">
+                                <a href="classes/NullLogger.html" data-type="entity-link">NullLogger</a>
+                            </li>
                         </ul>
                     </li>
                         <li class="chapter">
@@ -147,6 +150,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/DataProvider.html" data-type="entity-link">DataProvider</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/Logger.html" data-type="entity-link">Logger</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/OrderedDataStoreIdxServiceIndex.html" data-type="entity-link">OrderedDataStoreIdxServiceIndex</a>

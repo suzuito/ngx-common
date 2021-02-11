@@ -127,7 +127,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Directive, ElementRef, EmbeddedViewRef, Input, TemplateRef, ViewContainerRef } from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Directive, ElementRef, EmbeddedViewRef, TemplateRef, ViewContainerRef } from &#x27;@angular/core&#x27;;
 import { Cursor } from &#x27;./cursor&#x27;;
 
 interface Ctx {
@@ -165,11 +165,12 @@ export class MugenScrollDataDirective {
    * @ignore
    */
   constructor(
+    private el: ElementRef,
     private template: TemplateRef&lt;any&gt;,
     private viewContainer: ViewContainerRef,
   ) {
     this.datasMap &#x3D; new Map&lt;string, object&gt;();
-    this.max &#x3D; 100;
+    this.max &#x3D; 30;
     this.newCursor &#x3D; (v: object) &#x3D;&gt; new Cursor([v.toString()]);
   }
 
