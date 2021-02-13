@@ -17,7 +17,6 @@ describe('MugenScrollDataDirective', () => {
   let spyClear: jasmine.Spy<any>;
   let mockViewRef: any;
   let spyDetectChanges: jasmine.Spy<any>;
-  let mockRootNode: any;
   let spySetAttribute: jasmine.Spy<any>;
   let v: MugenScrollDataDirective;
 
@@ -157,7 +156,7 @@ describe('MugenScrollDataDirective', () => {
     describe('Max is 10', () => {
       beforeEach(() => {
         v.max = 10;
-      })
+      });
       it('Not arrenge', () => {
         v.arrangeAfterPush();
         v.arrangeAfterUnshift();

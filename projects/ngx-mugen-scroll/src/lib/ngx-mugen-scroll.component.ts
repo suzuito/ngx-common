@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ContentChild, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ReflectiveInjector, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ContentChild,
+  ElementRef,
+  EventEmitter, Input, OnChanges, OnInit, Output,
+  SimpleChanges
+} from '@angular/core';
 import { MugenScrollTopDirective } from './mugen-scroll-top.directive';
 import { MugenScrollBottomDirective } from './mugen-scroll-bottom.directive';
 import { DataProvider } from './mugen-scroll';
@@ -6,8 +13,12 @@ import { CursorStoreService } from './cursor-store.service';
 import { MugenScrollDataDirective } from './mugen-scroll-data.directive';
 import { Logger } from './logger';
 
-export interface ScrollBottomEvent { }
-export interface ScrollTopEvent { }
+export interface ScrollBottomEvent {
+  intersectionRatio: number;
+}
+export interface ScrollTopEvent {
+  intersectionRatio: number;
+}
 
 class NullLogger implements Logger {
   info(...msgs: Array<string>): void { }
@@ -181,14 +192,18 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
             throw new Error('MugenScrollTopDirective is undefined in ng-content');
           }
           if (entity.target === this.topDirective.element && entity.isIntersecting === true) {
-            this.top.emit({});
+            this.top.emit({
+              intersectionRatio: entity.intersectionRatio,
+            });
             if (this.autoFetchingTop === false) {
               return;
             }
             this.fetchTop();
           }
           if (entity.target === this.bottomDirective.element && entity.isIntersecting === true) {
-            this.bottom.emit({});
+            this.bottom.emit({
+              intersectionRatio: entity.intersectionRatio,
+            });
             if (this.autoFetchingBottom === false) {
               return;
             }
