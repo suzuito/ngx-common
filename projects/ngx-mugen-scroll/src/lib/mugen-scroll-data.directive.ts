@@ -36,7 +36,6 @@ export class MugenScrollDataDirective {
    * @ignore
    */
   constructor(
-    private el: ElementRef,
     private template: TemplateRef<any>,
     private viewContainer: ViewContainerRef,
   ) {
