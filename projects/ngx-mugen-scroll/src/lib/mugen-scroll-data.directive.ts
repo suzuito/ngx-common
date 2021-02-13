@@ -80,7 +80,6 @@ export class MugenScrollDataDirective {
       this.datasMap.set(cursor.toString(), data);
       this.bottom = data;
     });
-    this.arrange(true);
   }
 
   /**
@@ -102,34 +101,35 @@ export class MugenScrollDataDirective {
       this.datasMap.set(cursor.toString(), data);
       this.top = data;
     });
-    this.arrange(false);
   }
 
   /**
    * @ignore
    */
-  private arrange(deleteAtTop: boolean): void {
-    if (this.viewContainer.length <= this.max) {
-      return;
-    }
+  public arrangeAfterPush(): void {
     const n = this.viewContainer.length - this.max;
-    if (deleteAtTop === true) {
-      for (let i = 0; i < n; i++) {
-        this.viewContainer.remove(0);
-        if (this.top) {
-          const cursor = this.newCursor(this.top);
-          this.datasMap.delete(cursor.toString());
-        }
-        const ref = this.viewContainer.get(0);
-        if (ref === null) {
-          break;
-        }
-        const vref: EmbeddedViewRef<object> = ref as EmbeddedViewRef<object>;
-        const ctx = vref.context as Ctx;
-        this.top = ctx.data;
+    for (let i = 0; i < n; i++) {
+      this.viewContainer.remove(0);
+      if (this.top) {
+        const cursor = this.newCursor(this.top);
+        this.datasMap.delete(cursor.toString());
       }
-      return;
+      const ref = this.viewContainer.get(0);
+      if (ref === null) {
+        break;
+      }
+      const vref: EmbeddedViewRef<object> = ref as EmbeddedViewRef<object>;
+      const ctx = vref.context as Ctx;
+      this.top = ctx.data;
     }
+    return;
+  }
+
+  /**
+   * @ignore
+   */
+  public arrangeAfterUnshift(): void {
+    const n = this.viewContainer.length - this.max;
     for (let i = 0; i < n; i++) {
       let j = this.viewContainer.length - 1;
       this.viewContainer.remove(j);
@@ -147,4 +147,5 @@ export class MugenScrollDataDirective {
       this.bottom = ctx.data;
     }
   }
+
 }

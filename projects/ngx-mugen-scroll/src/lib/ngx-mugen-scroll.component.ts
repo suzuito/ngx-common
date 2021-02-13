@@ -212,7 +212,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
           if (this.dataDirective === undefined) {
             throw new Error('MugenScrollDataDirective is undefined in ng-content');
           }
-          this.dataDirective.push(...datas);
+          this.push(...datas);
           (this.el.nativeElement as HTMLElement).scroll(0, cursorStoreInfo.scrollTop);
         });
         return;
@@ -222,7 +222,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       if (this.dataDirective === undefined) {
         throw new Error('MugenScrollDataDirective is undefined in ng-content');
       }
-      this.dataDirective.push(...datas);
+      this.push(...datas);
       if (this.scrollBottomOnInit) {
         this.scrollBottom();
       } else {
@@ -293,7 +293,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       false,
     );
     const bottomBeforeAdded = this.dataDirective.bottom;
-    this.dataDirective.push(...datas);
+    this.push(...datas);
 
     return new Promise((resolve, reject) => {
       try {
@@ -327,7 +327,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       false,
     );
     const topBeforeAdded = this.dataDirective.top;
-    this.dataDirective.unshift(...datas);
+    this.unshift(...datas);
 
     return new Promise((resolve, reject) => {
       try {
@@ -442,5 +442,25 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
 
   private scrollTop(): void {
     (this.el.nativeElement as HTMLElement).scroll(0, 0);
+  }
+
+  private push(...datas: Array<object>): void {
+    if (this.dataDirective === undefined) {
+      throw new Error('MugenScrollDataDirective is undefined in ng-content');
+    }
+    this.dataDirective.push(...datas);
+    if (this.dataDirective.length > this.dataDirective.max) {
+      this.dataDirective.arrangeAfterPush();
+    }
+  }
+
+  private unshift(...datas: Array<object>): void {
+    if (this.dataDirective === undefined) {
+      throw new Error('MugenScrollDataDirective is undefined in ng-content');
+    }
+    this.dataDirective.unshift(...datas);
+    if (this.dataDirective.length > this.dataDirective.max) {
+      this.dataDirective.arrangeAfterUnshift();
+    }
   }
 }
