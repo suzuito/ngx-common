@@ -37,7 +37,7 @@ export class CursorStoreService {
     this.store.delete(p);
   }
 
-  get(p: string): CursorStoreInfo | undefined {
-    return this.store.get(p);
+  get length(): number {
+    return this.store.size;
   }
 }
