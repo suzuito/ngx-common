@@ -24,6 +24,37 @@ class NullLogger implements Logger {
   info(...msgs: Array<string>): void { }
 }
 
+function callbackIntersectionObserver(component: NgxMugenScrollComponent): IntersectionObserverCallback {
+  return (entities: Array<IntersectionObserverEntry>): void => {
+    entities.forEach(entity => {
+      if (component.bottomDirective === undefined) {
+        throw new Error('MugenScrollBottomDirective is undefined in ng-content');
+      }
+      if (component.topDirective === undefined) {
+        throw new Error('MugenScrollTopDirective is undefined in ng-content');
+      }
+      if (entity.target === component.topDirective.element && entity.isIntersecting === true) {
+        component.top.emit({
+          intersectionRatio: entity.intersectionRatio,
+        });
+        if (component.autoFetchingTop === false) {
+          return;
+        }
+        component.fetchTop();
+      }
+      if (entity.target === component.bottomDirective.element && entity.isIntersecting === true) {
+        component.bottom.emit({
+          intersectionRatio: entity.intersectionRatio,
+        });
+        if (component.autoFetchingBottom === false) {
+          return;
+        }
+        component.fetchBottom();
+      }
+    });
+  };
+}
+
 @Component({
   selector: 'lib-ngx-mugen-scroll',
   template: `
@@ -34,14 +65,23 @@ class NullLogger implements Logger {
 })
 export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges {
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollBottomDirective)
-  private bottomDirective: MugenScrollBottomDirective | undefined;
+  public bottomDirective: MugenScrollBottomDirective | undefined;
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollTopDirective)
-  private topDirective: MugenScrollTopDirective | undefined;
+  public topDirective: MugenScrollTopDirective | undefined;
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollDataDirective)
-  private dataDirective: MugenScrollDataDirective | undefined;
+  public dataDirective: MugenScrollDataDirective | undefined;
 
   /**
    * Provider of stream data
@@ -183,34 +223,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     }
     // New current state
     this.intersectionObserver = new IntersectionObserver(
-      (entities: Array<IntersectionObserverEntry>): void => {
-        entities.forEach(entity => {
-          if (this.bottomDirective === undefined) {
-            throw new Error('MugenScrollBottomDirective is undefined in ng-content');
-          }
-          if (this.topDirective === undefined) {
-            throw new Error('MugenScrollTopDirective is undefined in ng-content');
-          }
-          if (entity.target === this.topDirective.element && entity.isIntersecting === true) {
-            this.top.emit({
-              intersectionRatio: entity.intersectionRatio,
-            });
-            if (this.autoFetchingTop === false) {
-              return;
-            }
-            this.fetchTop();
-          }
-          if (entity.target === this.bottomDirective.element && entity.isIntersecting === true) {
-            this.bottom.emit({
-              intersectionRatio: entity.intersectionRatio,
-            });
-            if (this.autoFetchingBottom === false) {
-              return;
-            }
-            this.fetchBottom();
-          }
-        });
-      },
+      callbackIntersectionObserver(this),
       {
         root: this.el.nativeElement,
         rootMargin: '0px',

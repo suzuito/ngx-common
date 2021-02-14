@@ -8,6 +8,7 @@
     "build-dist": "ng build ngx-mugen-scroll --prod",
     "test-ci": "ng test ngx-mugen-scroll --watch=false --browsers=ChromeHeadlessCustom --code-coverage",
     "test-lib": "ng test ngx-mugen-scroll --watch=true --browsers=ChromeHeadlessCustom --code-coverage",
+    "test": "ng test ngx-mugen-scroll",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build-docs": "rm -rf docs && cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
