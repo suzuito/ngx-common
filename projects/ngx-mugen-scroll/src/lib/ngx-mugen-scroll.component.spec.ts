@@ -1,7 +1,7 @@
-import { Component, ContentChild, SimpleChange, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Provider, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { Cursor } from './cursor';
-import { CursorStoreInfo } from './cursor-store.service';
+import { CursorStoreInfo, CursorStoreService } from './cursor-store.service';
 import { DataProvider } from './mugen-scroll';
 import { MugenScrollBottomDirective } from './mugen-scroll-bottom.directive';
 import { MugenScrollDataDirective } from './mugen-scroll-data.directive';
@@ -10,52 +10,24 @@ import { NgxMugenScrollComponent } from './ngx-mugen-scroll.component';
 
 interface TestNgxMugenScrollBaseComponent {
   c: NgxMugenScrollComponent | undefined;
-  provider: DataProvider<TestData>;
 }
 
 @Component({
-  selector: 'lib-test-component-100',
+  selector: 'lib-test-component',
   template: `
-  <lib-ngx-mugen-scroll [provider]='provider'>
+  <lib-ngx-mugen-scroll [provider]='provider' [scrollBottomOnInit]='scrollBottomOnInit' [autoInitAfterViewInit]='autoInitAfterViewInit' [countPerLoad]='countPerLoad'>
       <div libMugenScrollTop></div>
       <div *libMugenScrollData='let data = data'></div>
       <div libMugenScrollBottom></div>
   </lib-ngx-mugen-scroll>`,
 })
-class TestNgxMugenScroll100Component implements TestNgxMugenScrollBaseComponent {
+class TestNgxMugenScrollComponent implements TestNgxMugenScrollBaseComponent {
   @ViewChild(NgxMugenScrollComponent)
   public c: NgxMugenScrollComponent | undefined;
-  public provider: DataProvider<TestData> = new TestDataProvider100();
-}
-
-@Component({
-  selector: 'lib-test-component-100-scroll-bottom',
-  template: `
-  <lib-ngx-mugen-scroll [provider]='provider' [scrollBottomOnInit]=true>
-      <div libMugenScrollTop></div>
-      <div *libMugenScrollData='let data = data'></div>
-      <div libMugenScrollBottom></div>
-  </lib-ngx-mugen-scroll>`,
-})
-class TestNgxMugenScroll100ScrollBottomComponent implements TestNgxMugenScrollBaseComponent {
-  @ViewChild(NgxMugenScrollComponent)
-  public c: NgxMugenScrollComponent | undefined;
-  public provider: DataProvider<TestData> = new TestDataProvider100();
-}
-
-@Component({
-  selector: 'lib-test-component-0',
-  template: `
-  <lib-ngx-mugen-scroll [provider]='provider'>
-      <div libMugenScrollTop></div>
-      <div *libMugenScrollData='let data = data'></div>
-      <div libMugenScrollBottom></div>
-  </lib-ngx-mugen-scroll>`,
-})
-class TestNgxMugenScroll0Component implements TestNgxMugenScrollBaseComponent {
-  @ViewChild(NgxMugenScrollComponent)
-  public c: NgxMugenScrollComponent | undefined;
-  public provider: DataProvider<TestData> = new TestDataProvider0();
+  public scrollBottomOnInit = false;
+  public autoInitAfterViewInit = false;
+  public countPerLoad = 3;
+  constructor(public provider: TestDataProvider) { }
 }
 
 interface TestData {
@@ -89,7 +61,7 @@ class TestDataProvider implements DataProvider<TestData> {
     }
     for (; i < n; i++) {
       const j = cursor.getItem(0) as number + i;
-      if (j > n - 1) {
+      if (j > this.datas.length - 1) {
         break;
       }
       r.push(this.datas[j]);
@@ -112,7 +84,11 @@ class TestDataProvider implements DataProvider<TestData> {
     return r;
   }
   async fetchOnLoad(info: CursorStoreInfo): Promise<Array<TestData>> {
-    throw new Error('Not implemented');
+    return await this.fetchBottom(
+      info.topCursor,
+      info.n,
+      true,
+    );
   }
   async fetchOnInit(n: number): Promise<Array<TestData>> {
     return await this.fetchBottom(
@@ -123,145 +99,189 @@ class TestDataProvider implements DataProvider<TestData> {
   }
 }
 
-class TestDataProvider0 extends TestDataProvider {
-  constructor() {
-    super(0);
-  }
-}
-
-class TestDataProvider100 extends TestDataProvider {
-  constructor() {
-    super(100);
-  }
-}
-
 describe('NgxMugenScrollComponent', () => {
-  let component: TestNgxMugenScrollBaseComponent;
-  let fixture: ComponentFixture<TestNgxMugenScrollBaseComponent>;
+  let component: TestNgxMugenScrollComponent;
+  let fixture: ComponentFixture<TestNgxMugenScrollComponent>;
+
+  let mockIntersectionObserver: IntersectionObserver;
 
   let spyBottomDirective: jasmine.SpyObj<MugenScrollBottomDirective>;
   let spyTopDirective: jasmine.SpyObj<MugenScrollTopDirective>;
-  let spyDataDirective: jasmine.SpyObj<MugenScrollDataDirective>;
-  let spyProvider: jasmine.SpyObj<DataProvider<TestData>>;
+  let spyIntersectionObserver: jasmine.SpyObj<IntersectionObserver>;
 
-  function setSpy(): void {
-    spyBottomDirective = spyOnAllFunctions(component.c?.bottomDirective as MugenScrollBottomDirective);
-    spyTopDirective = spyOnAllFunctions(component.c?.topDirective as MugenScrollTopDirective);
-    spyDataDirective = spyOnAllFunctions(component.c?.dataDirective as MugenScrollDataDirective);
-    spyProvider = spyOnAllFunctions(component.provider);
+  let spyDataDirectivePush: jasmine.Spy;
+  let spyDataDirectiveClear: jasmine.Spy;
+
+  const declarations = [
+    TestNgxMugenScrollComponent,
+    NgxMugenScrollComponent,
+    MugenScrollTopDirective,
+    MugenScrollBottomDirective,
+    MugenScrollDataDirective,
+  ];
+
+  let providers: Array<Provider>;
+
+  function c(): NgxMugenScrollComponent {
+    if (component.c === undefined) {
+      throw new Error('c is undefined');
+    }
+    return component.c;
   }
 
-  describe('Provider 0', () => {
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        declarations: [
-          TestNgxMugenScroll0Component,
-          NgxMugenScrollComponent,
-          MugenScrollTopDirective,
-          MugenScrollBottomDirective,
-          MugenScrollDataDirective,
-        ],
-      })
-        .compileComponents();
-      fixture = TestBed.createComponent(TestNgxMugenScroll0Component);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-      await fixture.whenRenderingDone();
-      setSpy();
-    });
+  function setSpy(): void {
+    spyBottomDirective = spyOnAllFunctions(c().bottomDirective as MugenScrollBottomDirective);
+    spyTopDirective = spyOnAllFunctions(c().topDirective as MugenScrollTopDirective);
+    spyDataDirectivePush = spyOn(c().dataDirective as MugenScrollDataDirective, 'push');
+    spyDataDirectiveClear = spyOn(c().dataDirective as MugenScrollDataDirective, 'clear');
+    mockIntersectionObserver = new IntersectionObserver(() => { });
+    spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
+    c().newIntersectionObserver = (callback: IntersectionObserverCallback): IntersectionObserver => mockIntersectionObserver;
+  }
 
-    it('saveScrollPosition', () => {
-      component.c?.saveScrollPosition();
-      expect(component.c?.dataDirective?.top).toBeUndefined();
-      expect(component.c?.dataDirective?.bottom).toBeUndefined();
-    });
-  });
+  async function compileComponents(): Promise<void> {
+    await TestBed.configureTestingModule({
+      declarations,
+      providers,
+    })
+      .compileComponents();
+    fixture = TestBed.createComponent(TestNgxMugenScrollComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenRenderingDone();
+    setSpy();
+  }
 
-  describe('Provider 100', () => {
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        declarations: [
-          TestNgxMugenScroll100Component,
-          NgxMugenScrollComponent,
-          MugenScrollTopDirective,
-          MugenScrollBottomDirective,
-          MugenScrollDataDirective,
-        ],
-      })
-        .compileComponents();
-      fixture = TestBed.createComponent(TestNgxMugenScroll100Component);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-      await fixture.whenRenderingDone();
-      setSpy();
-    });
-
-    it('should create using default config', () => {
-      expect(component).toBeTruthy();
-      expect(component.c?.scrollBottomOnInit).toBeFalse();
-      expect(component.c?.countPerLoadMode).toBe('small');
-    });
-
-    it('ngAfterViewInit', async () => {
-      await component.c?.ngAfterViewInit();
-    });
-
-    it('ngOnChanges to middle', () => {
-      component.c?.ngOnChanges(
-        {
-          countPerLoadMode: new SimpleChange(
-            'small',
-            'middle',
-            true,
-          ),
-        },
-      );
-      expect(component.c?.countPerLoad).toBe(50);
-    });
-
-    it('ngOnChanges to big', () => {
-      component.c?.ngOnChanges(
-        {
-          countPerLoadMode: new SimpleChange(
-            'small',
-            'big',
-            true,
-          ),
-        },
-      );
-      expect(component.c?.countPerLoad).toBe(100);
-    });
-
-    it('saveScrollPosition', () => {
-      component.c?.saveScrollPosition();
-      expect(component.c?.dataDirective?.top).toEqual({ index: 0, name: `id-0` });
-      expect(component.c?.dataDirective?.bottom).toEqual({ index: 9, name: `id-9` });
-    });
+  beforeEach(async () => {
+    providers = [];
   });
 
   describe('Provider 100 scroll bottom on init', () => {
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        declarations: [
-          TestNgxMugenScroll100ScrollBottomComponent,
-          NgxMugenScrollComponent,
-          MugenScrollTopDirective,
-          MugenScrollBottomDirective,
-          MugenScrollDataDirective,
-        ],
-      })
-        .compileComponents();
-      fixture = TestBed.createComponent(TestNgxMugenScroll100ScrollBottomComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-      await fixture.whenRenderingDone();
-      setSpy();
+
+    beforeEach(() => {
+      providers.push({
+        provide: TestDataProvider,
+        useValue: new TestDataProvider(100),
+      });
     });
 
-    it('should create', () => {
-      expect(component).toBeTruthy();
-      expect(component.c?.scrollBottomOnInit).toBeTrue();
-      expect(component.c?.countPerLoadMode).toBe('small');
+    //     it('should create and deafult config', () => {
+    //       expect(c()).toBeTruthy();
+    //       expect(c().scrollBottomOnInit).toBeFalse();
+    //       expect(c().countPerLoadMode).toBe('small');
+    //     });
+
+    describe('init', () => {
+      let spyScrollBottom: jasmine.Spy;
+      let spyScrollTop: jasmine.Spy;
+
+      beforeEach(async () => {
+        await compileComponents();
+      });
+
+      beforeEach(() => {
+        spyScrollBottom = spyOn(c(), 'scrollBottom');
+        spyScrollTop = spyOn(c(), 'scrollTop');
+      });
+
+      describe('Success cases provided by provider.fetchOnInit', () => {
+
+        afterEach(() => {
+          expect(spyDataDirectivePush.calls.count()).toBe(1);
+          expect(spyDataDirectivePush.calls.argsFor(0)).toEqual([
+            { index: 0, name: `id-0` },
+            { index: 1, name: `id-1` },
+            { index: 2, name: `id-2` },
+            { index: 3, name: `id-3` },
+            { index: 4, name: `id-4` },
+            { index: 5, name: `id-5` },
+            { index: 6, name: `id-6` },
+            { index: 7, name: `id-7` },
+            { index: 8, name: `id-8` },
+            { index: 9, name: `id-9` },
+          ]);
+          expect(spyDataDirectiveClear.calls.count()).toBe(1);
+          expect(spyIntersectionObserver.observe.calls.count()).toBe(2);
+          expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
+          expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
+        });
+
+        it('init with scrollTop', async () => {
+          await c().init();
+          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+          expect(spyScrollBottom.calls.count()).toBe(0);
+          expect(spyScrollTop.calls.count()).toBe(1);
+        });
+
+        it('init with scrollBottom', async () => {
+          c().scrollBottomOnInit = true;
+          await c().init();
+          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+          expect(spyScrollBottom.calls.count()).toBe(1);
+          expect(spyScrollTop.calls.count()).toBe(0);
+        });
+
+        it('init with existing inetersection observer', async () => {
+          c().intersectionObserver = mockIntersectionObserver;
+          await c().init();
+          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(1);
+          expect(spyScrollBottom.calls.count()).toBe(0);
+          expect(spyScrollTop.calls.count()).toBe(1);
+        });
+
+        it('init with autoLoadScrollPosition==false', async () => {
+          c().autoLoadScrollPosition = false;
+          await c().init();
+          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+          expect(spyScrollBottom.calls.count()).toBe(0);
+          expect(spyScrollTop.calls.count()).toBe(1);
+        });
+      });
     });
+
+    describe('Success cases provided by provider.fetchOnLoad', () => {
+      let mockCursorStoreService: CursorStoreService;
+      let spyScrollBottom: jasmine.Spy;
+      let spyScrollTop: jasmine.Spy;
+      let spyCursorStoreServiceLoad: jasmine.Spy;
+
+      beforeEach(async () => {
+        const returnedCursorStoreInfo: CursorStoreInfo = {
+          topCursor: new TestDataCursor({ index: 50, name: 'id-50' }),
+          bottomCursor: new TestDataCursor({ index: 55, name: 'id-55' }),
+          n: 5,
+          scrollTop: 101,
+        };
+        mockCursorStoreService = new CursorStoreService();
+        spyCursorStoreServiceLoad = spyOn(mockCursorStoreService, 'load').and.returnValue(returnedCursorStoreInfo);
+        providers.push({
+          provide: CursorStoreService,
+          useValue: mockCursorStoreService,
+        });
+        await compileComponents();
+        c().uniqId = 'test-id';
+      });
+
+      beforeEach(() => {
+        spyScrollBottom = spyOn(c(), 'scrollBottom');
+        spyScrollTop = spyOn(c(), 'scrollTop');
+      });
+
+      it('', async () => {
+        await c().init();
+
+        expect(spyDataDirectivePush.calls.count()).toBe(1);
+        expect(spyDataDirectivePush.calls.argsFor(0)).toEqual([
+          { index: 50, name: `id-50` },
+          { index: 51, name: `id-51` },
+          { index: 52, name: `id-52` },
+          { index: 53, name: `id-53` },
+          { index: 54, name: `id-54` },
+        ]);
+        expect(spyDataDirectiveClear.calls.count()).toBe(1);
+      });
+
+    });
+
   });
 });
