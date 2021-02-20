@@ -197,9 +197,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * @ignore
    */
   constructor(
-    private el: ElementRef,
+    public el: ElementRef,
     private cursorStoreService: CursorStoreService,
   ) {
+    console.log('foo', this.el);
     this.scrollBottomOnInit = false;
     this.countPerLoad = 10;
     this.bottom = new EventEmitter<ScrollBottomEvent>();
@@ -379,6 +380,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
         return;
       }
     }
+    console.log('hello', this.element.children);
     let s = 0;
     const cursor = this._provider.newCursor(at);
     for (let i = 0; i < this.element.children.length; i++) {
@@ -386,6 +388,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       if (v === null) {
         continue;
       }
+      console.log(v);
       const u = v as HTMLElement;
       const cursorRootNode = u.getAttribute('_cursor');
       if (cursorRootNode === null) {

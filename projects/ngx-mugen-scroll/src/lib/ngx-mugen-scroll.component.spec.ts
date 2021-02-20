@@ -98,8 +98,6 @@ describe('NgxMugenScrollComponent', () => {
   let spyScrollBottomAt: jasmine.Spy;
   let spyScrollTopAt: jasmine.Spy;
   let spyScrollTop: jasmine.Spy;
-  let mockElementRef: ElementRef;
-  let mockElementRefElement: HTMLElement;
   // let spyElementRefElementScroll: jasmine.Spy;
   const declarations = [
     TestNgxMugenScrollComponent,
@@ -130,8 +128,6 @@ describe('NgxMugenScrollComponent', () => {
   beforeEach(async () => {
     mockProvider = new TestDataProvider2();
     mockCursorStoreService = new CursorStoreService();
-    mockElementRefElement = document.createElement('div');
-    mockElementRef = new ElementRef(mockElementRefElement);
     providers = [
       {
         provide: TestDataProvider2,
@@ -140,10 +136,6 @@ describe('NgxMugenScrollComponent', () => {
       {
         provide: CursorStoreService,
         useValue: mockCursorStoreService,
-      },
-      {
-        provide: ElementRef,
-        useValue: mockElementRef,
       },
     ];
   });
@@ -430,4 +422,81 @@ describe('NgxMugenScrollComponent', () => {
       });
     });
   });
+  describe('scroll', () => {
+    let elementChildren: Array<HTMLElement>;
+    let mockElementRef: ElementRef<HTMLElement>;
+    let mockElementRefElement: HTMLElement;
+    let spyElementRefElementScroll: jasmine.Spy;
+    let mockElementChildren: HTMLCollection;
+    let spyElementChildren: jasmine.Spy;
+    beforeEach(async () => {
+      elementChildren = [
+        createMockElement(10, { index: 0, name: `foo` }),
+        createMockElement(999),
+        createMockElement(11, { index: 1, name: `bar` }),
+        createMockElement(12, { index: 2, name: `hoge` }),
+        createMockElement(13, { index: 3, name: `fuga` }),
+      ];
+      await compileComponents2();
+      mockElementChildren = new MockHTMLCollection();
+      spyOnProperty(mockElementChildren, 'length').and.returnValue(elementChildren.length);
+      spyElementChildren = spyOn(mockElementChildren, 'item');
+      elementChildren.forEach((v, i) => {
+        spyElementChildren = spyElementChildren.withArgs(i).and.returnValue(v);
+      });
+      mockElementRefElement = document.createElement('div');
+      spyElementRefElementScroll = spyOn(mockElementRefElement, 'scroll');
+      spyOnProperty(mockElementRefElement, 'children').and.returnValue(mockElementChildren);
+      mockElementRef = new ElementRef(mockElementRefElement);
+      c().el = mockElementRef;
+    });
+    describe('scrollTopAt', () => {
+      it('', () => {
+        c().scrollTopAt({ index: 2, name: 'hoge' });
+        expect(spyElementRefElementScroll.calls.count()).toBe(1);
+        expect(spyElementRefElementScroll.calls.argsFor(0)).toEqual([0, 21]);
+      });
+    });
+    describe('scrollBottomAt', () => {
+      it('', () => {
+        c().scrollBottomAt({ index: 2, name: 'hoge' });
+      });
+    });
+    describe('scrollTop', () => {
+      it('', async () => {
+        c().scrollTop();
+        expect(spyElementRefElementScroll.calls.count()).toBe(1);
+        expect(spyElementRefElementScroll.calls.argsFor(0)).toEqual([0, 0]);
+      });
+    });
+    describe('scrollBottom', () => {
+      it('', async () => {
+        c().scrollBottom();
+        expect(spyElementRefElementScroll.calls.count()).toBe(1);
+        expect(spyElementRefElementScroll.calls.argsFor(0)).toEqual([0, 9999999]);
+      });
+    });
+  });
 });
+
+class MockHTMLCollection implements HTMLCollection {
+  namedItem(name: string): Element | null {
+    throw new Error('Not impl');
+  }
+  item(index: number): Element | null {
+    throw new Error('Not impl');
+  }
+  get length(): number {
+    throw new Error('Not impl');
+  }
+  [index: number]: Element;
+}
+
+function createMockElement(height: number, data?: TestData | undefined): HTMLElement {
+  const r = document.createElement('div');
+  if (data !== undefined) {
+    spyOn(r, 'getAttribute').withArgs('_cursor').and.returnValue(new TestDataCursor(data).toString());
+  }
+  spyOnProperty(r, 'offsetHeight').and.returnValue(height);
+  return r;
+}
