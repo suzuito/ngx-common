@@ -30,7 +30,8 @@ describe('CursorStoreService', () => {
         bottomCursor: new Cursor([1]),
         topCursor: new Cursor([10]),
         n: 20,
-        scrollTop: 30,
+        scrollY: 30,
+        scrollX: 0,
       });
       service.delete('path1');
       expect(service.length).toBe(0);
@@ -48,7 +49,8 @@ describe('CursorStoreService', () => {
         bottomCursor: new Cursor([2]),
         topCursor: new Cursor([20]),
         n: 30,
-        scrollTop: 40,
+        scrollY: 40,
+        scrollX: 0,
       });
     });
   });

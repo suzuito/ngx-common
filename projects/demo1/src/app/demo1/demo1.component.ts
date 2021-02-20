@@ -70,7 +70,6 @@ export class Demo1Component implements OnInit, AfterViewInit {
 
   public provider1: Provider;
   public provider2: Provider;
-  public provider3: Provider;
 
   @ViewChild('mugenScroll2')
   public mugenScroll2: NgxMugenScrollComponent | undefined;
@@ -83,7 +82,6 @@ export class Demo1Component implements OnInit, AfterViewInit {
   ) {
     this.provider1 = new Provider('stream1');
     this.provider2 = new Provider('stream2');
-    this.provider3 = new Provider('stream3');
   }
 
   ngOnInit(): void {
@@ -97,11 +95,11 @@ export class Demo1Component implements OnInit, AfterViewInit {
     }
   }
 
-  clickReadMoreTop(): void {
+  clickReadMoreTop2(): void {
     this.mugenScroll2?.fetchTop();
   }
 
-  clickReadMoreBottom(): void {
+  clickReadMoreBottom2(): void {
     this.mugenScroll2?.fetchBottom();
   }
 }

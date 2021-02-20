@@ -1,25 +1,22 @@
 <lib-ngx-mugen-scroll #mugenScroll1 class='stream1' [provider]='provider1' [logger]='logger' countPerLoadMode='middle'>
-    <div libMugenScrollTop class='top'></div>
-    <div *libMugenScrollData='let data = data' class='data'>
+    <div libMugenScrollTop class='top1'></div>
+    <div *libMugenScrollData='let data = data' class='data1'>
         <div>{{data.index}}</div>
         <div>{{data.message}}</div>
     </div>
-    <div libMugenScrollBottom class='bottom'></div>
+    <div libMugenScrollBottom class='bottom1'></div>
 </lib-ngx-mugen-scroll>
 
 <lib-ngx-mugen-scroll #mugenScroll2 class='stream2' [provider]='provider2' [autoFetchingBottom]='false'
     [autoFetchingTop]='false' [logger]='logger'>
-    <div libMugenScrollTop class='top'>
-        <button (click)='clickReadMoreTop()'>Read more ...</button>
+    <div libMugenScrollTop class='top1'>
+        <button (click)='clickReadMoreTop2()'>Read more ...</button>
     </div>
-    <div *libMugenScrollData='let data = data' class='data'>
+    <div *libMugenScrollData='let data = data' class='data1'>
         <div>{{data.index}}</div>
         <div>{{data.message}}</div>
     </div>
-    <div libMugenScrollBottom class='bottom'>
-        <button (click)='clickReadMoreBottom()'>Read more ...</button>
+    <div libMugenScrollBottom class='bottom1'>
+        <button (click)='clickReadMoreBottom2()'>Read more ...</button>
     </div>
 </lib-ngx-mugen-scroll>
-
-<lib-ngx-mugen-scroll class='stream3'></lib-ngx-mugen-scroll>
-<lib-ngx-mugen-scroll class='stream4'></lib-ngx-mugen-scroll>

@@ -1,4 +1,4 @@
-import { Component, Provider, ViewChild } from '@angular/core';
+import { Component, ElementRef, Provider, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { Cursor } from './cursor';
 import { CursorStoreInfo, CursorStoreService } from './cursor-store.service';
@@ -80,31 +80,27 @@ class TestDataProvider2 implements DataProvider<TestData> {
 describe('NgxMugenScrollComponent', () => {
   let component: TestNgxMugenScrollComponent;
   let fixture: ComponentFixture<TestNgxMugenScrollComponent>;
-
   let mockIntersectionObserver: IntersectionObserver;
-
   let mockProvider: TestDataProvider2;
   let spyProviderFetchOnInit: jasmine.Spy;
   let spyProviderFetchOnLoad: jasmine.Spy;
   let spyProviderFetchBottom: jasmine.Spy;
   let spyProviderFetchTop: jasmine.Spy;
-
   let mockCursorStoreService: CursorStoreService;
   let spyCursorStoreServiceLoad: jasmine.Spy;
   let spyCursorStoreServiceSave: jasmine.Spy;
-
   // let spyBottomDirective: jasmine.SpyObj<MugenScrollBottomDirective>;
   // let spyTopDirective: jasmine.SpyObj<MugenScrollTopDirective>;
   let spyIntersectionObserver: jasmine.SpyObj<IntersectionObserver>;
-
   let spyDataDirectivePush: jasmine.Spy;
   let spyDataDirectiveClear: jasmine.Spy;
-
   let spyScrollBottom: jasmine.Spy;
   let spyScrollBottomAt: jasmine.Spy;
   let spyScrollTopAt: jasmine.Spy;
   let spyScrollTop: jasmine.Spy;
-
+  let mockElementRef: ElementRef;
+  let mockElementRefElement: HTMLElement;
+  let spyElementRefElementScroll: jasmine.Spy;
   const declarations = [
     TestNgxMugenScrollComponent,
     TestNgxMugenScrollDefaultComponent,
@@ -113,16 +109,13 @@ describe('NgxMugenScrollComponent', () => {
     MugenScrollBottomDirective,
     MugenScrollDataDirective,
   ];
-
   let providers: Array<Provider>;
-
   function c(): NgxMugenScrollComponent {
     if (component.c === undefined) {
       throw new Error('c is undefined');
     }
     return component.c;
   }
-
   async function compileComponents2(): Promise<void> {
     await TestBed.configureTestingModule({
       declarations,
@@ -134,10 +127,11 @@ describe('NgxMugenScrollComponent', () => {
     fixture.detectChanges();
     await fixture.whenRenderingDone();
   }
-
   beforeEach(async () => {
     mockProvider = new TestDataProvider2();
     mockCursorStoreService = new CursorStoreService();
+    mockElementRefElement = document.createElement('div');
+    mockElementRef = new ElementRef(mockElementRefElement);
     providers = [
       {
         provide: TestDataProvider2,
@@ -147,9 +141,12 @@ describe('NgxMugenScrollComponent', () => {
         provide: CursorStoreService,
         useValue: mockCursorStoreService,
       },
+      {
+        provide: ElementRef,
+        useValue: mockElementRef,
+      },
     ];
   });
-
   it('Default setting', async () => {
     await TestBed.configureTestingModule({
       declarations,
@@ -167,12 +164,10 @@ describe('NgxMugenScrollComponent', () => {
     expect(cc.c?.countPerLoad).toBe(10);
     expect(cc.c?.countPerLoadMode).toBe('small');
   });
-
   describe('ngOnChange', () => {
     beforeEach(async () => {
       await compileComponents2();
     });
-
     it('countPerLoad', () => {
       c().ngOnChanges({
         countPerLoadMode: {
@@ -183,7 +178,6 @@ describe('NgxMugenScrollComponent', () => {
         },
       });
       expect(c().countPerLoad).toBe(10);
-
       c().ngOnChanges({
         countPerLoadMode: {
           isFirstChange: () => false,
@@ -193,7 +187,6 @@ describe('NgxMugenScrollComponent', () => {
         },
       });
       expect(c().countPerLoad).toBe(100);
-
       c().ngOnChanges({
         countPerLoadMode: {
           isFirstChange: () => false,
@@ -205,11 +198,8 @@ describe('NgxMugenScrollComponent', () => {
       expect(c().countPerLoad).toBe(50);
     });
   });
-
   describe('init', () => {
-
     let data: Array<TestData>;
-
     beforeEach(() => {
       data = [
         { index: 0, name: `id-0` },
@@ -224,9 +214,7 @@ describe('NgxMugenScrollComponent', () => {
         { index: 9, name: `id-9` },
       ];
     });
-
     describe('Success cases provided by provider.fetchOnInit', () => {
-
       beforeEach(async () => {
         spyProviderFetchOnInit = spyOn(mockProvider, 'fetchOnInit').and.resolveTo(data);
         spyProviderFetchOnLoad = spyOn(mockProvider, 'fetchOnLoad').and.resolveTo(data);
@@ -239,7 +227,6 @@ describe('NgxMugenScrollComponent', () => {
         spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
         c().newIntersectionObserver = () => mockIntersectionObserver;
       });
-
       afterEach(() => {
         expect(spyProviderFetchOnInit.calls.count()).toBe(1);
         expect(spyProviderFetchOnLoad.calls.count()).toBe(0);
@@ -250,14 +237,12 @@ describe('NgxMugenScrollComponent', () => {
         expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
         expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
       });
-
       it('init with scrollTop', async () => {
         await c().init();
         expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
         expect(spyScrollBottom.calls.count()).toBe(0);
         expect(spyScrollTop.calls.count()).toBe(1);
       });
-
       it('init with scrollBottom', async () => {
         c().scrollBottomOnInit = true;
         await c().init();
@@ -265,7 +250,6 @@ describe('NgxMugenScrollComponent', () => {
         expect(spyScrollBottom.calls.count()).toBe(1);
         expect(spyScrollTop.calls.count()).toBe(0);
       });
-
       it('init with existing inetersection observer', async () => {
         c().intersectionObserver = mockIntersectionObserver;
         await c().init();
@@ -273,7 +257,6 @@ describe('NgxMugenScrollComponent', () => {
         expect(spyScrollBottom.calls.count()).toBe(0);
         expect(spyScrollTop.calls.count()).toBe(1);
       });
-
       it('init with autoLoadScrollPosition==false', async () => {
         c().autoLoadScrollPosition = false;
         await c().init();
@@ -282,7 +265,6 @@ describe('NgxMugenScrollComponent', () => {
         expect(spyScrollTop.calls.count()).toBe(1);
       });
     });
-
     describe('Success cases provided by provider.fetchOnLoad', () => {
       let returnedCursorStoreInfo: CursorStoreInfo;
       beforeEach(async () => {
@@ -305,7 +287,6 @@ describe('NgxMugenScrollComponent', () => {
         spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
         c().newIntersectionObserver = () => mockIntersectionObserver;
       });
-
       afterEach(() => {
         expect(spyProviderFetchOnInit.calls.count()).toBe(0);
         expect(spyProviderFetchOnLoad.calls.count()).toBe(1);
@@ -316,12 +297,10 @@ describe('NgxMugenScrollComponent', () => {
         expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
         expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
       });
-
       it('', async () => {
         await c().init();
       });
     });
-
     describe('saveScrollPosition', () => {
       let dataDirective: MugenScrollDataDirective;
       beforeEach(async () => {
@@ -333,21 +312,18 @@ describe('NgxMugenScrollComponent', () => {
         }
         dataDirective = v;
       });
-
       it('DataDirective.top === undefined', () => {
         dataDirective.top = undefined;
         dataDirective.bottom = { index: 10, name: 'data-10' };
         c().saveScrollPosition();
         expect(spyCursorStoreServiceSave.calls.count()).toBe(0);
       });
-
       it('DataDirective.bottom === undefined', () => {
         dataDirective.top = { index: 0, name: 'data-0' };
         dataDirective.bottom = undefined;
         c().saveScrollPosition();
         expect(spyCursorStoreServiceSave.calls.count()).toBe(0);
       });
-
       it('DataDirective.bottom and top are not undefined', () => {
         dataDirective.top = { index: 0, name: 'data-0' };
         dataDirective.bottom = { index: 10, name: 'data-10' };
@@ -443,7 +419,7 @@ describe('NgxMugenScrollComponent', () => {
         await c().fetchTop();
         expect(spyProviderFetchTop.calls.count()).toBe(1);
         expect(spyProviderFetchTop.calls.argsFor(0)).toEqual([
-          { index: -1, name: 'id--1' },
+          new TestDataCursor({ index: -1, name: 'id--1' }),
           c().countPerLoad,
           false,
         ]);

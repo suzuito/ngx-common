@@ -38,6 +38,9 @@
     height: 300px;
 
     overflow: scroll;
+
+    display: flex;
+    flex-direction: row;
 }
 
 
@@ -55,19 +58,19 @@
     overflow: scroll;
 }
 
-.top {
+.top1 {
     border: 3px solid blue;
     box-sizing: border-box;
     height: 100px;
 }
 
-.bottom {
+.bottom1 {
     border: 3px solid blue;
     box-sizing: border-box;
     height: 100px;
 }
 
-.data {
+.data1 {
     border: 3px solid red;
     box-sizing: border-box;
 }
