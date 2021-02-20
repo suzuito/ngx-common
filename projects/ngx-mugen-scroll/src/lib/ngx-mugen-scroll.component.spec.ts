@@ -100,7 +100,7 @@ describe('NgxMugenScrollComponent', () => {
   let spyScrollTop: jasmine.Spy;
   let mockElementRef: ElementRef;
   let mockElementRefElement: HTMLElement;
-  let spyElementRefElementScroll: jasmine.Spy;
+  // let spyElementRefElementScroll: jasmine.Spy;
   const declarations = [
     TestNgxMugenScrollComponent,
     TestNgxMugenScrollDefaultComponent,
