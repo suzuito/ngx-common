@@ -93,8 +93,8 @@ describe('NgxMugenScrollComponent', () => {
   let spyCursorStoreServiceLoad: jasmine.Spy;
   let spyCursorStoreServiceSave: jasmine.Spy;
 
-  let spyBottomDirective: jasmine.SpyObj<MugenScrollBottomDirective>;
-  let spyTopDirective: jasmine.SpyObj<MugenScrollTopDirective>;
+  // let spyBottomDirective: jasmine.SpyObj<MugenScrollBottomDirective>;
+  // let spyTopDirective: jasmine.SpyObj<MugenScrollTopDirective>;
   let spyIntersectionObserver: jasmine.SpyObj<IntersectionObserver>;
 
   let spyDataDirectivePush: jasmine.Spy;
