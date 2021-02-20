@@ -165,7 +165,6 @@ export class MugenScrollDataDirective {
    * @ignore
    */
   constructor(
-    private el: ElementRef,
     private template: TemplateRef&lt;any&gt;,
     private viewContainer: ViewContainerRef,
   ) {
@@ -210,7 +209,6 @@ export class MugenScrollDataDirective {
       this.datasMap.set(cursor.toString(), data);
       this.bottom &#x3D; data;
     });
-    this.arrange(true);
   }
 
   /**
@@ -232,34 +230,35 @@ export class MugenScrollDataDirective {
       this.datasMap.set(cursor.toString(), data);
       this.top &#x3D; data;
     });
-    this.arrange(false);
   }
 
   /**
    * @ignore
    */
-  private arrange(deleteAtTop: boolean): void {
-    if (this.viewContainer.length &lt;&#x3D; this.max) {
-      return;
-    }
+  public arrangeAfterPush(): void {
     const n &#x3D; this.viewContainer.length - this.max;
-    if (deleteAtTop &#x3D;&#x3D;&#x3D; true) {
-      for (let i &#x3D; 0; i &lt; n; i++) {
-        this.viewContainer.remove(0);
-        if (this.top) {
-          const cursor &#x3D; this.newCursor(this.top);
-          this.datasMap.delete(cursor.toString());
-        }
-        const ref &#x3D; this.viewContainer.get(0);
-        if (ref &#x3D;&#x3D;&#x3D; null) {
-          break;
-        }
-        const vref: EmbeddedViewRef&lt;object&gt; &#x3D; ref as EmbeddedViewRef&lt;object&gt;;
-        const ctx &#x3D; vref.context as Ctx;
-        this.top &#x3D; ctx.data;
+    for (let i &#x3D; 0; i &lt; n; i++) {
+      this.viewContainer.remove(0);
+      if (this.top) {
+        const cursor &#x3D; this.newCursor(this.top);
+        this.datasMap.delete(cursor.toString());
       }
-      return;
+      const ref &#x3D; this.viewContainer.get(0);
+      if (ref &#x3D;&#x3D;&#x3D; null) {
+        break;
+      }
+      const vref: EmbeddedViewRef&lt;object&gt; &#x3D; ref as EmbeddedViewRef&lt;object&gt;;
+      const ctx &#x3D; vref.context as Ctx;
+      this.top &#x3D; ctx.data;
     }
+    return;
+  }
+
+  /**
+   * @ignore
+   */
+  public arrangeAfterUnshift(): void {
+    const n &#x3D; this.viewContainer.length - this.max;
     for (let i &#x3D; 0; i &lt; n; i++) {
       let j &#x3D; this.viewContainer.length - 1;
       this.viewContainer.remove(j);
@@ -277,6 +276,7 @@ export class MugenScrollDataDirective {
       this.bottom &#x3D; ctx.data;
     }
   }
+
 }
 </code></pre>
     </div>

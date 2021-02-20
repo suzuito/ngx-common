@@ -7,7 +7,7 @@
     left: 60px;
     width: 300px;
     top: 60px;
-    bottom: 60px;
+    height: 700px;
 
     overflow: scroll;
 }
@@ -21,24 +21,56 @@
     left: 420px;
     width: 300px;
     top: 60px;
-    bottom: 60px;
+    height: 700px;
 
     overflow: scroll;
 }
 
-.top {
+.stream3 {
+    border: 3px solid black;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 840px;
+    width: 700px;
+    top: 60px;
+    height: 300px;
+
+    overflow: scroll;
+
+    display: flex;
+    flex-direction: row;
+}
+
+
+.stream4 {
+    border: 3px solid black;
+    box-sizing: border-box;
+
+    position: absolute;
+
+    left: 840px;
+    width: 700px;
+    top: 420px;
+    height: 300px;
+
+    overflow: scroll;
+}
+
+.top1 {
     border: 3px solid blue;
     box-sizing: border-box;
     height: 100px;
 }
 
-.bottom {
+.bottom1 {
     border: 3px solid blue;
     box-sizing: border-box;
     height: 100px;
 }
 
-.data {
+.data1 {
     border: 3px solid red;
     box-sizing: border-box;
 }

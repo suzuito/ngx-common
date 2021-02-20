@@ -24,6 +24,37 @@ class NullLogger implements Logger {
   info(...msgs: Array<string>): void { }
 }
 
+function callbackIntersectionObserver(component: NgxMugenScrollComponent): IntersectionObserverCallback {
+  return (entities: Array<IntersectionObserverEntry>): void => {
+    entities.forEach(entity => {
+      if (component.bottomDirective === undefined) {
+        throw new Error('MugenScrollBottomDirective is undefined in ng-content');
+      }
+      if (component.topDirective === undefined) {
+        throw new Error('MugenScrollTopDirective is undefined in ng-content');
+      }
+      if (entity.target === component.topDirective.element && entity.isIntersecting === true) {
+        component.top.emit({
+          intersectionRatio: entity.intersectionRatio,
+        });
+        if (component.autoFetchingTop === false) {
+          return;
+        }
+        component.fetchTop();
+      }
+      if (entity.target === component.bottomDirective.element && entity.isIntersecting === true) {
+        component.bottom.emit({
+          intersectionRatio: entity.intersectionRatio,
+        });
+        if (component.autoFetchingBottom === false) {
+          return;
+        }
+        component.fetchBottom();
+      }
+    });
+  };
+}
+
 @Component({
   selector: 'lib-ngx-mugen-scroll',
   template: `
@@ -34,27 +65,53 @@ class NullLogger implements Logger {
 })
 export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges {
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollBottomDirective)
-  private bottomDirective: MugenScrollBottomDirective | undefined;
+  public bottomDirective: MugenScrollBottomDirective | undefined;
+  private get _bottomDirective(): MugenScrollBottomDirective {
+    if (this.bottomDirective === undefined) {
+      throw new Error('bottomDirective is undefined');
+    }
+    return this.bottomDirective;
+  }
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollTopDirective)
-  private topDirective: MugenScrollTopDirective | undefined;
+  public topDirective: MugenScrollTopDirective | undefined;
+  private get _topDirective(): MugenScrollTopDirective {
+    if (this.topDirective === undefined) {
+      throw new Error('topDirective is undefined');
+    }
+    return this.topDirective;
+  }
 
+  /**
+   * @ignore
+   */
   @ContentChild(MugenScrollDataDirective)
-  private dataDirective: MugenScrollDataDirective | undefined;
+  public dataDirective: MugenScrollDataDirective | undefined;
+  private get _dataDirective(): MugenScrollDataDirective {
+    if (this.dataDirective === undefined) {
+      throw new Error('dataDirective is undefined');
+    }
+    return this.dataDirective;
+  }
 
   /**
    * Provider of stream data
    */
   @Input()
   public provider: DataProvider<object> | undefined;
-
-  /**
-   * Unique id of stream.
-   * This id is used to save scroll position.
-   */
-  @Input()
-  public uniqId: string;
+  private get _provider(): DataProvider<object> {
+    if (this.provider === undefined) {
+      throw new Error('provider is undefined');
+    }
+    return this.provider;
+  }
 
   /**
    * Whether scroll to bottom or not when stream is displayed initially.
@@ -90,6 +147,12 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   public autoLoadScrollPosition: boolean;
 
   /**
+   * Whether call init function on afterViewInit
+   */
+  @Input()
+  public autoInitAfterViewInit: boolean;
+
+  /**
    * Event emitted when scrolled to bottom.
    */
   @Output()
@@ -108,18 +171,35 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   @Input()
   public logger: Logger;
 
-  private intersectionObserver: IntersectionObserver | undefined;
+  /**
+   * @ignore
+   */
+  public intersectionObserver: IntersectionObserver | undefined;
+
   private timeoutMillisecondsAfterBinding: number;
-  private countPerLoad: number;
+
+  /**
+   * @ignore
+   */
+  public countPerLoad: number;
+
+  /**
+   * @ignore
+   */
+  public newIntersectionObserver:
+    (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined) => IntersectionObserver;
+
+  private get element(): HTMLElement {
+    return this.el.nativeElement as HTMLElement;
+  }
 
   /**
    * @ignore
    */
   constructor(
-    private el: ElementRef,
+    public el: ElementRef,
     private cursorStoreService: CursorStoreService,
   ) {
-    this.uniqId = '';
     this.scrollBottomOnInit = false;
     this.countPerLoad = 10;
     this.bottom = new EventEmitter<ScrollBottomEvent>();
@@ -130,6 +210,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     this.timeoutMillisecondsAfterBinding = 1;
     this.logger = new NullLogger();
     this.countPerLoadMode = 'small';
+    this.autoInitAfterViewInit = true;
+    this.newIntersectionObserver = (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined) => {
+      return new IntersectionObserver(callback, options);
+    };
     this.setCountPerLoad();
   }
 
@@ -143,7 +227,9 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * @ignore
    */
   async ngAfterViewInit(): Promise<void> {
-    this.init();
+    if (this.autoInitAfterViewInit) {
+      await this.init();
+    }
   }
 
   /**
@@ -159,91 +245,44 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   /**
    * Initialize stream. This method is also called in `ngAfterViewInit`.
    */
-  init(): void {
-    // Validate current state
-    if (this.bottomDirective === undefined) {
-      throw new Error('MugenScrollBottomDirective is undefined in ng-content');
-    }
-    if (this.topDirective === undefined) {
-      throw new Error('MugenScrollTopDirective is undefined in ng-content');
-    }
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    if (this.provider === undefined) {
-      throw new Error('provider is undefined in ng-content');
-    }
-    this.dataDirective.max = this.countPerLoad * 3;
+  async init(): Promise<void> {
+    this._dataDirective.max = this.countPerLoad * 3;
     // Clear previous state
-    this.dataDirective.clear();
-    this.dataDirective.newCursor = this.provider.newCursor;
+    this._dataDirective.clear();
+    this._dataDirective.newCursor = this._provider.newCursor;
     if (this.intersectionObserver !== undefined) {
       this.intersectionObserver.disconnect();
       this.intersectionObserver = undefined;
     }
     // New current state
-    this.intersectionObserver = new IntersectionObserver(
-      (entities: Array<IntersectionObserverEntry>): void => {
-        entities.forEach(entity => {
-          if (this.bottomDirective === undefined) {
-            throw new Error('MugenScrollBottomDirective is undefined in ng-content');
-          }
-          if (this.topDirective === undefined) {
-            throw new Error('MugenScrollTopDirective is undefined in ng-content');
-          }
-          if (entity.target === this.topDirective.element && entity.isIntersecting === true) {
-            this.top.emit({
-              intersectionRatio: entity.intersectionRatio,
-            });
-            if (this.autoFetchingTop === false) {
-              return;
-            }
-            this.fetchTop();
-          }
-          if (entity.target === this.bottomDirective.element && entity.isIntersecting === true) {
-            this.bottom.emit({
-              intersectionRatio: entity.intersectionRatio,
-            });
-            if (this.autoFetchingBottom === false) {
-              return;
-            }
-            this.fetchBottom();
-          }
-        });
-      },
+    this.intersectionObserver = this.newIntersectionObserver(
+      callbackIntersectionObserver(this),
       {
         root: this.el.nativeElement,
         rootMargin: '0px',
         threshold: 1.0,
       },
     );
-    this.intersectionObserver.observe(this.bottomDirective.element);
-    this.intersectionObserver.observe(this.topDirective.element);
+    this.intersectionObserver.observe(this._bottomDirective.element);
+    this.intersectionObserver.observe(this._topDirective.element);
     // Load data
+    let datas = [];
     if (this.autoLoadScrollPosition) {
-      const cursorStoreInfo = this.cursorStoreService.load(this.provider.scrollId);
+      const cursorStoreInfo = this.cursorStoreService.load(this._provider.scrollId);
       if (cursorStoreInfo !== undefined) {
-        this.provider.fetchOnLoad(cursorStoreInfo).then(datas => {
-          if (this.dataDirective === undefined) {
-            throw new Error('MugenScrollDataDirective is undefined in ng-content');
-          }
-          this.push(...datas);
-          (this.el.nativeElement as HTMLElement).scroll(0, cursorStoreInfo.scrollTop);
-        });
+        datas = await this._provider.fetchOnLoad(cursorStoreInfo);
+        this.push(...datas);
+        this.element.scroll(0, cursorStoreInfo.scrollY);
         return;
       }
     }
-    this.provider.fetchOnInit(this.countPerLoad).then(datas => {
-      if (this.dataDirective === undefined) {
-        throw new Error('MugenScrollDataDirective is undefined in ng-content');
-      }
-      this.push(...datas);
-      if (this.scrollBottomOnInit) {
-        this.scrollBottom();
-      } else {
-        this.scrollTop();
-      }
-    });
+    datas = await this._provider.fetchOnInit(this.countPerLoad);
+    this.push(...datas);
+    if (this.scrollBottomOnInit) {
+      this.scrollBottom();
+      return;
+    }
+    this.scrollTop();
   }
 
   private setCountPerLoad(): void {
@@ -260,31 +299,18 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
 
   /**
    * Save current scroll position.
-   * Scroll position is saved on memory and related to `uniqId`.
+   * Scroll position is saved on memory and related to `provider.scrollId`.
    */
   saveScrollPosition(): void {
-    if (this.provider === undefined) {
-      console.error('provider is undefined in ng-content');
-      return;
-    }
-    if (this.dataDirective === undefined) {
-      console.error('MugenScrollDataDirective is undefined in ng-content');
-      return;
-    }
-    if (this.dataDirective.top === undefined) {
-      console.error('MugenScrollDataDirective.top is undefined in ng-content');
-      return;
-    }
-    if (this.dataDirective.bottom === undefined) {
-      console.error('MugenScrollDataDirective.bottom is undefined in ng-content');
+    if (this._dataDirective.top === undefined || this._dataDirective.bottom === undefined) {
       return;
     }
     this.cursorStoreService.save(
-      this.provider.scrollId,
-      this.provider.newCursor(this.dataDirective.bottom),
-      this.provider.newCursor(this.dataDirective.top),
-      this.dataDirective.length,
-      (this.el.nativeElement as HTMLElement).scrollTop,
+      this._provider.scrollId,
+      this._provider.newCursor(this._dataDirective.bottom),
+      this._provider.newCursor(this._dataDirective.top),
+      this._dataDirective.length,
+      this.element.scrollTop,
     );
   }
 
@@ -293,21 +319,15 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * The data is provided by `fetchBottom` method of the `provider`.
    */
   async fetchBottom(): Promise<void> {
-    if (this.provider === undefined) {
-      throw new Error('provider is undefined in ng-content');
-    }
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    if (this.dataDirective.bottom === undefined) {
+    if (this._dataDirective.bottom === undefined) {
       return;
     }
-    const datas = await this.provider.fetchBottom(
-      this.provider.newCursor(this.dataDirective.bottom),
+    const datas = await this._provider.fetchBottom(
+      this._provider.newCursor(this._dataDirective.bottom),
       this.countPerLoad,
       false,
     );
-    const bottomBeforeAdded = this.dataDirective.bottom;
+    const bottomBeforeAdded = this._dataDirective.bottom;
     this.push(...datas);
 
     return new Promise((resolve, reject) => {
@@ -317,7 +337,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
           resolve();
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
-        reject();
+        reject(err);
       }
     });
   }
@@ -327,21 +347,15 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * The data is provided by `fetchTop` method of the `provider`.
    */
   async fetchTop(): Promise<void> {
-    if (this.provider === undefined) {
-      throw new Error('provider is undefined in ng-content');
-    }
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    if (this.dataDirective.top === undefined) {
+    if (this._dataDirective.top === undefined) {
       return;
     }
-    const datas = await this.provider.fetchTop(
-      this.provider.newCursor(this.dataDirective.top),
+    const datas = await this._provider.fetchTop(
+      this._provider.newCursor(this._dataDirective.top),
       this.countPerLoad,
       false,
     );
-    const topBeforeAdded = this.dataDirective.top;
+    const topBeforeAdded = this._dataDirective.top;
     this.unshift(...datas);
 
     return new Promise((resolve, reject) => {
@@ -351,28 +365,24 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
           resolve();
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
-        reject();
+        reject(err);
       }
     });
   }
 
-  private scrollTopAt(at: object): void {
-    if (this.provider === undefined) {
-      throw new Error('provider is undefined in ng-content');
-    }
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    if (this.dataDirective.top !== undefined) {
-      if (this.provider.newCursor(this.dataDirective.top).toString() === this.provider.newCursor(at).toString()) {
+  /**
+   * @ignore
+   */
+  scrollTopAt(at: object): void {
+    if (this._dataDirective.top !== undefined) {
+      if (this._provider.newCursor(this._dataDirective.top).toString() === this._provider.newCursor(at).toString()) {
         return;
       }
     }
     let s = 0;
-    const cursor = this.provider.newCursor(at);
-    const el = this.el.nativeElement as HTMLElement;
-    for (let i = 0; i < el.children.length; i++) {
-      const v = el.children.item(i);
+    const cursor = this._provider.newCursor(at);
+    for (let i = 0; i < this.element.children.length; i++) {
+      const v = this.element.children.item(i);
       if (v === null) {
         continue;
       }
@@ -381,46 +391,34 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       if (cursorRootNode === null) {
         continue;
       }
-      // console.log(cursorRootNode, cursor.toString(), cursorRootNode === cursor.toString());
       if (cursorRootNode === cursor.toString()) {
         break;
       }
       s += u.offsetHeight;
     }
-    el.scroll(0, s);
+    this.element.scroll(0, s);
   }
 
-  private scrollBottomAt(at: object): void {
-    if (this.provider === undefined) {
-      throw new Error('provider is undefined in ng-content');
-    }
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    if (this.dataDirective.bottom !== undefined) {
-      if (this.provider.newCursor(this.dataDirective.bottom).toString() === this.provider.newCursor(at).toString()) {
+  /**
+   * @ignore
+   */
+  scrollBottomAt(at: object): void {
+    if (this._dataDirective.bottom !== undefined) {
+      if (this._provider.newCursor(this._dataDirective.bottom).toString() === this._provider.newCursor(at).toString()) {
         return;
       }
     }
-    if (this.topDirective === undefined) {
-      throw new Error('MugenScrollTopDirective is undefined in ng-content');
-    }
-    if (this.bottomDirective === undefined) {
-      throw new Error('MugenScrollTopDirective is undefined in ng-content');
-    }
     let s = 0;
-    const cursor = this.provider.newCursor(at);
-    const el = this.el.nativeElement as HTMLElement;
+    const cursor = this._provider.newCursor(at);
     let u: HTMLElement | undefined;
     const logs: Array<any> = [];
-    for (let i = 0; i < el.children.length; i++) {
-      const v = el.children.item(i);
+    for (let i = 0; i < this.element.children.length; i++) {
+      const v = this.element.children.item(i);
       if (v === null) {
         continue;
       }
       u = v as HTMLElement;
       const cursorRootNode = u.getAttribute('_cursor');
-      // console.log(cursorRootNode, cursor.toString(), cursorRootNode === cursor.toString());
       if (cursorRootNode === cursor.toString()) {
         break;
       }
@@ -430,17 +428,13 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     if (u === undefined) {
       return;
     }
-    s -= (this.el.nativeElement as HTMLElement).clientHeight;
-    logs.push({ element: this.el.nativeElement, offsetHeight: -(this.el.nativeElement as HTMLElement).clientHeight });
+    s -= this.element.clientHeight;
+    logs.push({ element: this.el.nativeElement, offsetHeight: -this.element.clientHeight });
     s += u.offsetHeight;
     logs.push({ element: u, offsetHeight: u.offsetHeight });
-    s += this.bottomDirective.element.offsetHeight;
-    logs.push({ element: this.bottomDirective.element, offsetHeight: this.bottomDirective.element.offsetHeight });
-    el.scroll(0, s);
-
-    logs.forEach((v, i) => {
-      this.info(`i: ${i}, element: ${v.element}, offset: ${v.offsetHeight}`);
-    });
+    s += this._bottomDirective.element.offsetHeight;
+    logs.push({ element: this._bottomDirective.element, offsetHeight: this._bottomDirective.element.offsetHeight });
+    this.element.scroll(0, s);
     this.info(`scroll: ${s}`);
   }
 
@@ -451,31 +445,31 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     this.logger.info(...msgs);
   }
 
-  private scrollBottom(): void {
-    (this.el.nativeElement as HTMLElement).scroll(0, 9999999);
+  /**
+   * @ignore
+   */
+  scrollBottom(): void {
+    this.element.scroll(0, 9999999);
   }
 
-  private scrollTop(): void {
-    (this.el.nativeElement as HTMLElement).scroll(0, 0);
+  /**
+   * @ignore
+   */
+  scrollTop(): void {
+    this.element.scroll(0, 0);
   }
 
   private push(...datas: Array<object>): void {
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    this.dataDirective.push(...datas);
-    if (this.dataDirective.length > this.dataDirective.max) {
-      this.dataDirective.arrangeAfterPush();
+    this._dataDirective.push(...datas);
+    if (this._dataDirective.length > this._dataDirective.max) {
+      this._dataDirective.arrangeAfterPush();
     }
   }
 
   private unshift(...datas: Array<object>): void {
-    if (this.dataDirective === undefined) {
-      throw new Error('MugenScrollDataDirective is undefined in ng-content');
-    }
-    this.dataDirective.unshift(...datas);
-    if (this.dataDirective.length > this.dataDirective.max) {
-      this.dataDirective.arrangeAfterUnshift();
+    this._dataDirective.unshift(...datas);
+    if (this._dataDirective.length > this._dataDirective.max) {
+      this._dataDirective.arrangeAfterUnshift();
     }
   }
 }

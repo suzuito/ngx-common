@@ -95,11 +95,11 @@ export class Demo1Component implements OnInit, AfterViewInit {
     }
   }
 
-  clickReadMoreTop(): void {
+  clickReadMoreTop2(): void {
     this.mugenScroll2?.fetchTop();
   }
 
-  clickReadMoreBottom(): void {
+  clickReadMoreBottom2(): void {
     this.mugenScroll2?.fetchBottom();
   }
 }
