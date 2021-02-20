@@ -114,13 +114,6 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   /**
-   * Unique id of stream.
-   * This id is used to save scroll position.
-   */
-  @Input()
-  public uniqId: string;
-
-  /**
    * Whether scroll to bottom or not when stream is displayed initially.
    */
   @Input()
@@ -203,7 +196,6 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     private el: ElementRef,
     private cursorStoreService: CursorStoreService,
   ) {
-    this.uniqId = '';
     this.scrollBottomOnInit = false;
     this.countPerLoad = 10;
     this.bottom = new EventEmitter<ScrollBottomEvent>();
@@ -309,7 +301,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
 
   /**
    * Save current scroll position.
-   * Scroll position is saved on memory and related to `uniqId`.
+   * Scroll position is saved on memory and related to `provider.scrollId`.
    */
   saveScrollPosition(): void {
     if (this._dataDirective.top === undefined || this._dataDirective.bottom === undefined) {
@@ -347,7 +339,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
           resolve();
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
-        reject();
+        reject(err);
       }
     });
   }
@@ -375,7 +367,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
           resolve();
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
-        reject();
+        reject(err);
       }
     });
   }
