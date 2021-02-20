@@ -32,14 +32,12 @@ export class Demo2Component implements OnInit {
     if (this.dataMugenScroll === undefined) {
       throw new Error('dataMugenScroll component is not found');
     }
-    console.log(group);
     this.dataMugenScroll.saveScrollPosition();
     this.dataProvider.currentGroupId = group.id;
     this.dataMugenScroll.init();
   }
 
   clickData(data: Data): void {
-    console.log(data);
   }
 
 }

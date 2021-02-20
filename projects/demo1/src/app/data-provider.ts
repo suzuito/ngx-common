@@ -58,7 +58,6 @@ export class DataProviderImplAsc implements DataProvider<Data> {
     async fetchOnLoad(
         info: CursorStoreInfo,
     ): Promise<Array<Data>> {
-        console.log(info);
         return await this.base.getLargerN<Data>(
             DataProviderImplAsc.store.name,
             'idx1',

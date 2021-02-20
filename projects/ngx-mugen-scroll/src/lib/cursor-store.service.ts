@@ -5,7 +5,7 @@ export interface CursorStoreInfo {
   bottomCursor: Cursor;
   topCursor: Cursor;
   n: number;
-  scrollTop: number;
+  scrollY: number;
 }
 
 @Injectable({
@@ -20,8 +20,7 @@ export class CursorStoreService {
   }
 
   save(p: string, bottomCursor: Cursor, topCursor: Cursor, n: number, scrollTop: number): void {
-    console.log(`Save cursor: ${p}, ${bottomCursor.toString()}, ${topCursor.toString()}, ${n}, ${scrollTop}`);
-    this.store.set(p, { bottomCursor, topCursor, n, scrollTop });
+    this.store.set(p, { bottomCursor, topCursor, n, scrollY });
   }
 
   load(p: string): CursorStoreInfo | undefined {
@@ -29,7 +28,6 @@ export class CursorStoreService {
     if (!i) {
       return undefined;
     }
-    console.log(`Load cursor: ${p}, ${i.bottomCursor.toString()}, ${i.topCursor.toString()}, ${i.n}, ${i.scrollTop}`);
     return i;
   }
 

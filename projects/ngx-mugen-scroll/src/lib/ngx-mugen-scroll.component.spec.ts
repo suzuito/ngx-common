@@ -290,7 +290,7 @@ describe('NgxMugenScrollComponent', () => {
           topCursor: new TestDataCursor({ index: 50, name: 'id-50' }),
           bottomCursor: new TestDataCursor({ index: 55, name: 'id-55' }),
           n: 5,
-          scrollTop: 101,
+          scrollY: 101,
         };
         spyCursorStoreServiceLoad = spyOn(mockCursorStoreService, 'load').and.returnValue(returnedCursorStoreInfo);
         spyProviderFetchOnInit = spyOn(mockProvider, 'fetchOnInit').and.resolveTo(data);

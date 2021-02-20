@@ -69,7 +69,6 @@ export class Debug1Component implements OnInit, AfterViewInit {
   }
 
   debugScroll(ev: any): void {
-    console.log(ev.target.scrollTop);
     this.logger.info(ev.target.scrollTop);
   }
 

@@ -189,6 +189,10 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   public newIntersectionObserver:
     (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined) => IntersectionObserver;
 
+  private get element(): HTMLElement {
+    return this.el.nativeElement as HTMLElement;
+  }
+
   /**
    * @ignore
    */
@@ -264,22 +268,16 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     // Load data
     let datas = [];
     if (this.autoLoadScrollPosition) {
-      console.log(this.cursorStoreService);
       const cursorStoreInfo = this.cursorStoreService.load(this._provider.scrollId);
       if (cursorStoreInfo !== undefined) {
         datas = await this._provider.fetchOnLoad(cursorStoreInfo);
         this.push(...datas);
-        (this.el.nativeElement as HTMLElement).scroll(0, cursorStoreInfo.scrollTop);
+        this.element.scroll(0, cursorStoreInfo.scrollY);
         return;
       }
     }
-    console.log('1');
-    console.log('countPerLoad', this.countPerLoad);
     datas = await this._provider.fetchOnInit(this.countPerLoad);
-    console.log(datas);
-    console.log('2');
     this.push(...datas);
-    console.log('3');
     if (this.scrollBottomOnInit) {
       this.scrollBottom();
       return;
@@ -312,7 +310,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       this._provider.newCursor(this._dataDirective.bottom),
       this._provider.newCursor(this._dataDirective.top),
       this._dataDirective.length,
-      (this.el.nativeElement as HTMLElement).scrollTop,
+      this.element.scrollTop,
     );
   }
 
@@ -383,9 +381,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     }
     let s = 0;
     const cursor = this._provider.newCursor(at);
-    const el = this.el.nativeElement as HTMLElement;
-    for (let i = 0; i < el.children.length; i++) {
-      const v = el.children.item(i);
+    for (let i = 0; i < this.element.children.length; i++) {
+      const v = this.element.children.item(i);
       if (v === null) {
         continue;
       }
@@ -394,13 +391,12 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       if (cursorRootNode === null) {
         continue;
       }
-      // console.log(cursorRootNode, cursor.toString(), cursorRootNode === cursor.toString());
       if (cursorRootNode === cursor.toString()) {
         break;
       }
       s += u.offsetHeight;
     }
-    el.scroll(0, s);
+    this.element.scroll(0, s);
   }
 
   /**
@@ -414,17 +410,15 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     }
     let s = 0;
     const cursor = this._provider.newCursor(at);
-    const el = this.el.nativeElement as HTMLElement;
     let u: HTMLElement | undefined;
     const logs: Array<any> = [];
-    for (let i = 0; i < el.children.length; i++) {
-      const v = el.children.item(i);
+    for (let i = 0; i < this.element.children.length; i++) {
+      const v = this.element.children.item(i);
       if (v === null) {
         continue;
       }
       u = v as HTMLElement;
       const cursorRootNode = u.getAttribute('_cursor');
-      // console.log(cursorRootNode, cursor.toString(), cursorRootNode === cursor.toString());
       if (cursorRootNode === cursor.toString()) {
         break;
       }
@@ -434,17 +428,13 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     if (u === undefined) {
       return;
     }
-    s -= (this.el.nativeElement as HTMLElement).clientHeight;
-    logs.push({ element: this.el.nativeElement, offsetHeight: -(this.el.nativeElement as HTMLElement).clientHeight });
+    s -= this.element.clientHeight;
+    logs.push({ element: this.el.nativeElement, offsetHeight: -this.element.clientHeight });
     s += u.offsetHeight;
     logs.push({ element: u, offsetHeight: u.offsetHeight });
     s += this._bottomDirective.element.offsetHeight;
     logs.push({ element: this._bottomDirective.element, offsetHeight: this._bottomDirective.element.offsetHeight });
-    el.scroll(0, s);
-
-    logs.forEach((v, i) => {
-      this.info(`i: ${i}, element: ${v.element}, offset: ${v.offsetHeight}`);
-    });
+    this.element.scroll(0, s);
     this.info(`scroll: ${s}`);
   }
 
@@ -459,14 +449,14 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * @ignore
    */
   scrollBottom(): void {
-    (this.el.nativeElement as HTMLElement).scroll(0, 9999999);
+    this.element.scroll(0, 9999999);
   }
 
   /**
    * @ignore
    */
   scrollTop(): void {
-    (this.el.nativeElement as HTMLElement).scroll(0, 0);
+    this.element.scroll(0, 0);
   }
 
   private push(...datas: Array<object>): void {
