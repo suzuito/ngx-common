@@ -6,6 +6,7 @@ export interface CursorStoreInfo {
   topCursor: Cursor;
   n: number;
   scrollY: number;
+  scrollX: number;
 }
 
 @Injectable({
@@ -19,8 +20,8 @@ export class CursorStoreService {
     this.store = new Map<string, CursorStoreInfo>();
   }
 
-  save(p: string, bottomCursor: Cursor, topCursor: Cursor, n: number, scrollTop: number): void {
-    this.store.set(p, { bottomCursor, topCursor, n, scrollY });
+  save(p: string, bottomCursor: Cursor, topCursor: Cursor, n: number, scrollY: number): void {
+    this.store.set(p, { bottomCursor, topCursor, n, scrollY, scrollX: 0 });
   }
 
   load(p: string): CursorStoreInfo | undefined {
