@@ -24,7 +24,7 @@ interface TestNgxMugenScrollBaseComponent {
 class TestNgxMugenScrollDefaultComponent implements TestNgxMugenScrollBaseComponent {
   @ViewChild(NgxMugenScrollComponent)
   public c: NgxMugenScrollComponent | undefined;
-  constructor(public provider: TestDataProvider) { }
+  constructor(public provider: TestDataProvider2) { }
 }
 
 @Component({
@@ -42,7 +42,7 @@ class TestNgxMugenScrollComponent implements TestNgxMugenScrollBaseComponent {
   public scrollBottomOnInit = false;
   public autoInitAfterViewInit = false;
   public countPerLoad = 3;
-  constructor(public provider: TestDataProvider) { }
+  constructor(public provider: TestDataProvider2) { }
 }
 
 interface TestData {
@@ -56,61 +56,24 @@ class TestDataCursor extends Cursor {
   }
 }
 
-class TestDataProvider implements DataProvider<TestData> {
-  public datas: Array<TestData>;
+class TestDataProvider2 implements DataProvider<TestData> {
   public scrollId = 'test';
-  constructor(n: number) {
-    this.datas = [];
-    for (let i = 0; i < n; i++) {
-      this.datas.push({ index: i, name: `id-${i}` });
-    }
+  constructor() {
   }
   newCursor(data: TestData): Cursor {
     return new TestDataCursor(data);
   }
   async fetchBottom(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<TestData>> {
-    const r = [];
-    let i = 0;
-    if (!includeEqual) {
-      i++;
-    }
-    for (; i < n; i++) {
-      const j = cursor.getItem(0) as number + i;
-      if (j > this.datas.length - 1) {
-        break;
-      }
-      r.push(this.datas[j]);
-    }
-    return r;
+    throw new Error('Not impl');
   }
   async fetchTop(cursor: Cursor, n: number, includeEqual: boolean): Promise<Array<TestData>> {
-    const r = [];
-    let i = 0;
-    if (!includeEqual) {
-      i++;
-    }
-    for (; i < n; i++) {
-      const j = (cursor.getItem(0) as number) - i;
-      if (j < 0) {
-        break;
-      }
-      r.unshift(this.datas[j]);
-    }
-    return r;
+    throw new Error('Not impl');
   }
   async fetchOnLoad(info: CursorStoreInfo): Promise<Array<TestData>> {
-    return await this.fetchBottom(
-      info.topCursor,
-      info.n,
-      true,
-    );
+    throw new Error('Not impl');
   }
   async fetchOnInit(n: number): Promise<Array<TestData>> {
-    return await this.fetchBottom(
-      this.newCursor({ index: 0, name: '' }),
-      n,
-      true
-    );
+    throw new Error('Not impl');
   }
 }
 
@@ -120,12 +83,27 @@ describe('NgxMugenScrollComponent', () => {
 
   let mockIntersectionObserver: IntersectionObserver;
 
+  let mockProvider: TestDataProvider2;
+  let spyProviderFetchOnInit: jasmine.Spy;
+  let spyProviderFetchOnLoad: jasmine.Spy;
+  let spyProviderFetchBottom: jasmine.Spy;
+  let spyProviderFetchTop: jasmine.Spy;
+
+  let mockCursorStoreService: CursorStoreService;
+  let spyCursorStoreServiceLoad: jasmine.Spy;
+  let spyCursorStoreServiceSave: jasmine.Spy;
+
   let spyBottomDirective: jasmine.SpyObj<MugenScrollBottomDirective>;
   let spyTopDirective: jasmine.SpyObj<MugenScrollTopDirective>;
   let spyIntersectionObserver: jasmine.SpyObj<IntersectionObserver>;
 
   let spyDataDirectivePush: jasmine.Spy;
   let spyDataDirectiveClear: jasmine.Spy;
+
+  let spyScrollBottom: jasmine.Spy;
+  let spyScrollBottomAt: jasmine.Spy;
+  let spyScrollTopAt: jasmine.Spy;
+  let spyScrollTop: jasmine.Spy;
 
   const declarations = [
     TestNgxMugenScrollComponent,
@@ -145,17 +123,7 @@ describe('NgxMugenScrollComponent', () => {
     return component.c;
   }
 
-  function setSpy(): void {
-    spyBottomDirective = spyOnAllFunctions(c().bottomDirective as MugenScrollBottomDirective);
-    spyTopDirective = spyOnAllFunctions(c().topDirective as MugenScrollTopDirective);
-    spyDataDirectivePush = spyOn(c().dataDirective as MugenScrollDataDirective, 'push');
-    spyDataDirectiveClear = spyOn(c().dataDirective as MugenScrollDataDirective, 'clear');
-    mockIntersectionObserver = new IntersectionObserver(() => { });
-    spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
-    c().newIntersectionObserver = (callback: IntersectionObserverCallback): IntersectionObserver => mockIntersectionObserver;
-  }
-
-  async function compileComponents(): Promise<void> {
+  async function compileComponents2(): Promise<void> {
     await TestBed.configureTestingModule({
       declarations,
       providers,
@@ -165,18 +133,24 @@ describe('NgxMugenScrollComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenRenderingDone();
-    setSpy();
   }
 
   beforeEach(async () => {
-    providers = [];
+    mockProvider = new TestDataProvider2();
+    mockCursorStoreService = new CursorStoreService();
+    providers = [
+      {
+        provide: TestDataProvider2,
+        useValue: mockProvider,
+      },
+      {
+        provide: CursorStoreService,
+        useValue: mockCursorStoreService,
+      },
+    ];
   });
 
   it('Default setting', async () => {
-    providers.push({
-      provide: TestDataProvider,
-      useValue: new TestDataProvider(100),
-    });
     await TestBed.configureTestingModule({
       declarations,
       providers,
@@ -194,206 +168,288 @@ describe('NgxMugenScrollComponent', () => {
     expect(cc.c?.countPerLoadMode).toBe('small');
   });
 
-  describe('Provider 100 scroll bottom on init', () => {
+  describe('ngOnChange', () => {
+    beforeEach(async () => {
+      await compileComponents2();
+    });
+
+    it('countPerLoad', () => {
+      c().ngOnChanges({
+        countPerLoadMode: {
+          isFirstChange: () => false,
+          firstChange: false,
+          previousValue: '',
+          currentValue: 'small',
+        },
+      });
+      expect(c().countPerLoad).toBe(10);
+
+      c().ngOnChanges({
+        countPerLoadMode: {
+          isFirstChange: () => false,
+          firstChange: false,
+          previousValue: '',
+          currentValue: 'big',
+        },
+      });
+      expect(c().countPerLoad).toBe(100);
+
+      c().ngOnChanges({
+        countPerLoadMode: {
+          isFirstChange: () => false,
+          firstChange: false,
+          previousValue: '',
+          currentValue: 'middle',
+        },
+      });
+      expect(c().countPerLoad).toBe(50);
+    });
+  });
+
+  describe('init', () => {
+
+    let data: Array<TestData>;
 
     beforeEach(() => {
-      providers.push({
-        provide: TestDataProvider,
-        useValue: new TestDataProvider(100),
-      });
+      data = [
+        { index: 0, name: `id-0` },
+        { index: 1, name: `id-1` },
+        { index: 2, name: `id-2` },
+        { index: 3, name: `id-3` },
+        { index: 4, name: `id-4` },
+        { index: 5, name: `id-5` },
+        { index: 6, name: `id-6` },
+        { index: 7, name: `id-7` },
+        { index: 8, name: `id-8` },
+        { index: 9, name: `id-9` },
+      ];
     });
 
-    describe('ngOnChange', () => {
-      beforeEach(async () => {
-        await compileComponents();
-      });
-
-      it('countPerLoad', () => {
-        c().ngOnChanges({
-          countPerLoadMode: {
-            isFirstChange: () => false,
-            firstChange: false,
-            previousValue: '',
-            currentValue: 'small',
-          },
-        });
-        expect(c().countPerLoad).toBe(10);
-
-        c().ngOnChanges({
-          countPerLoadMode: {
-            isFirstChange: () => false,
-            firstChange: false,
-            previousValue: '',
-            currentValue: 'big',
-          },
-        });
-        expect(c().countPerLoad).toBe(100);
-
-        c().ngOnChanges({
-          countPerLoadMode: {
-            isFirstChange: () => false,
-            firstChange: false,
-            previousValue: '',
-            currentValue: 'middle',
-          },
-        });
-        expect(c().countPerLoad).toBe(50);
-      });
-    });
-
-    describe('init', () => {
-      let spyScrollBottom: jasmine.Spy;
-      let spyScrollTop: jasmine.Spy;
+    describe('Success cases provided by provider.fetchOnInit', () => {
 
       beforeEach(async () => {
-        await compileComponents();
-      });
-
-      beforeEach(() => {
+        spyProviderFetchOnInit = spyOn(mockProvider, 'fetchOnInit').and.resolveTo(data);
+        spyProviderFetchOnLoad = spyOn(mockProvider, 'fetchOnLoad').and.resolveTo(data);
+        await compileComponents2();
         spyScrollBottom = spyOn(c(), 'scrollBottom');
         spyScrollTop = spyOn(c(), 'scrollTop');
+        spyDataDirectivePush = spyOn(c().dataDirective as MugenScrollDataDirective, 'push');
+        spyDataDirectiveClear = spyOn(c().dataDirective as MugenScrollDataDirective, 'clear');
+        mockIntersectionObserver = new IntersectionObserver(() => { });
+        spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
+        c().newIntersectionObserver = () => mockIntersectionObserver;
       });
 
-      describe('Success cases provided by provider.fetchOnInit', () => {
-
-        afterEach(() => {
-          expect(spyDataDirectivePush.calls.count()).toBe(1);
-          expect(spyDataDirectivePush.calls.argsFor(0)).toEqual([
-            { index: 0, name: `id-0` },
-            { index: 1, name: `id-1` },
-            { index: 2, name: `id-2` },
-            { index: 3, name: `id-3` },
-            { index: 4, name: `id-4` },
-            { index: 5, name: `id-5` },
-            { index: 6, name: `id-6` },
-            { index: 7, name: `id-7` },
-            { index: 8, name: `id-8` },
-            { index: 9, name: `id-9` },
-          ]);
-          expect(spyDataDirectiveClear.calls.count()).toBe(1);
-          expect(spyIntersectionObserver.observe.calls.count()).toBe(2);
-          expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
-          expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
-        });
-
-        it('init with scrollTop', async () => {
-          await c().init();
-          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
-          expect(spyScrollBottom.calls.count()).toBe(0);
-          expect(spyScrollTop.calls.count()).toBe(1);
-        });
-
-        it('init with scrollBottom', async () => {
-          c().scrollBottomOnInit = true;
-          await c().init();
-          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
-          expect(spyScrollBottom.calls.count()).toBe(1);
-          expect(spyScrollTop.calls.count()).toBe(0);
-        });
-
-        it('init with existing inetersection observer', async () => {
-          c().intersectionObserver = mockIntersectionObserver;
-          await c().init();
-          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(1);
-          expect(spyScrollBottom.calls.count()).toBe(0);
-          expect(spyScrollTop.calls.count()).toBe(1);
-        });
-
-        it('init with autoLoadScrollPosition==false', async () => {
-          c().autoLoadScrollPosition = false;
-          await c().init();
-          expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
-          expect(spyScrollBottom.calls.count()).toBe(0);
-          expect(spyScrollTop.calls.count()).toBe(1);
-        });
+      afterEach(() => {
+        expect(spyProviderFetchOnInit.calls.count()).toBe(1);
+        expect(spyProviderFetchOnLoad.calls.count()).toBe(0);
+        expect(spyDataDirectivePush.calls.count()).toBe(1);
+        expect(spyDataDirectivePush.calls.argsFor(0)).toEqual(data);
+        expect(spyDataDirectiveClear.calls.count()).toBe(1);
+        expect(spyIntersectionObserver.observe.calls.count()).toBe(2);
+        expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
+        expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
       });
 
+      it('init with scrollTop', async () => {
+        await c().init();
+        expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+        expect(spyScrollBottom.calls.count()).toBe(0);
+        expect(spyScrollTop.calls.count()).toBe(1);
+      });
+
+      it('init with scrollBottom', async () => {
+        c().scrollBottomOnInit = true;
+        await c().init();
+        expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+        expect(spyScrollBottom.calls.count()).toBe(1);
+        expect(spyScrollTop.calls.count()).toBe(0);
+      });
+
+      it('init with existing inetersection observer', async () => {
+        c().intersectionObserver = mockIntersectionObserver;
+        await c().init();
+        expect(spyIntersectionObserver.disconnect.calls.count()).toBe(1);
+        expect(spyScrollBottom.calls.count()).toBe(0);
+        expect(spyScrollTop.calls.count()).toBe(1);
+      });
+
+      it('init with autoLoadScrollPosition==false', async () => {
+        c().autoLoadScrollPosition = false;
+        await c().init();
+        expect(spyIntersectionObserver.disconnect.calls.count()).toBe(0);
+        expect(spyScrollBottom.calls.count()).toBe(0);
+        expect(spyScrollTop.calls.count()).toBe(1);
+      });
     });
 
     describe('Success cases provided by provider.fetchOnLoad', () => {
-      let mockCursorStoreService: CursorStoreService;
-      let spyScrollBottom: jasmine.Spy;
-      let spyScrollTop: jasmine.Spy;
-      let spyCursorStoreServiceLoad: jasmine.Spy;
-
+      let returnedCursorStoreInfo: CursorStoreInfo;
       beforeEach(async () => {
-        const returnedCursorStoreInfo: CursorStoreInfo = {
+        returnedCursorStoreInfo = {
           topCursor: new TestDataCursor({ index: 50, name: 'id-50' }),
           bottomCursor: new TestDataCursor({ index: 55, name: 'id-55' }),
           n: 5,
           scrollTop: 101,
         };
-        mockCursorStoreService = new CursorStoreService();
         spyCursorStoreServiceLoad = spyOn(mockCursorStoreService, 'load').and.returnValue(returnedCursorStoreInfo);
-        providers.push({
-          provide: CursorStoreService,
-          useValue: mockCursorStoreService,
-        });
-        await compileComponents();
-      });
-
-      beforeEach(() => {
+        spyProviderFetchOnInit = spyOn(mockProvider, 'fetchOnInit').and.resolveTo(data);
+        spyProviderFetchOnLoad = spyOn(mockProvider, 'fetchOnLoad').and.resolveTo(data);
+        await compileComponents2();
         spyScrollBottom = spyOn(c(), 'scrollBottom');
         spyScrollTop = spyOn(c(), 'scrollTop');
+        spyDataDirectivePush = spyOn(c().dataDirective as MugenScrollDataDirective, 'push');
+        spyDataDirectiveClear = spyOn(c().dataDirective as MugenScrollDataDirective, 'clear');
+        mockIntersectionObserver = new IntersectionObserver(() => { });
+        spyIntersectionObserver = spyOnAllFunctions(mockIntersectionObserver);
+        c().newIntersectionObserver = () => mockIntersectionObserver;
+      });
+
+      afterEach(() => {
+        expect(spyProviderFetchOnInit.calls.count()).toBe(0);
+        expect(spyProviderFetchOnLoad.calls.count()).toBe(1);
+        expect(spyDataDirectivePush.calls.count()).toBe(1);
+        expect(spyDataDirectivePush.calls.argsFor(0)).toEqual(data);
+        expect(spyDataDirectiveClear.calls.count()).toBe(1);
+        expect(spyIntersectionObserver.observe.calls.count()).toBe(2);
+        expect(spyIntersectionObserver.observe.calls.argsFor(0)).toEqual([component.c?.bottomDirective?.element as any]);
+        expect(spyIntersectionObserver.observe.calls.argsFor(1)).toEqual([component.c?.topDirective?.element as any]);
       });
 
       it('', async () => {
         await c().init();
-
-        expect(spyDataDirectivePush.calls.count()).toBe(1);
-        expect(spyDataDirectivePush.calls.argsFor(0)).toEqual([
-          { index: 50, name: `id-50` },
-          { index: 51, name: `id-51` },
-          { index: 52, name: `id-52` },
-          { index: 53, name: `id-53` },
-          { index: 54, name: `id-54` },
-        ]);
-        expect(spyDataDirectiveClear.calls.count()).toBe(1);
       });
-
     });
 
     describe('saveScrollPosition', () => {
-      let mockCursorStoreService: CursorStoreService;
-      let spyCursorStoreServiceSave: jasmine.Spy;
-
+      let dataDirective: MugenScrollDataDirective;
       beforeEach(async () => {
-        mockCursorStoreService = new CursorStoreService();
         spyCursorStoreServiceSave = spyOn(mockCursorStoreService, 'save');
-        providers.push({
-          provide: CursorStoreService,
-          useValue: mockCursorStoreService,
-        });
-        await compileComponents();
-      });
-
-      it('top and bottom are not undefined', async () => {
-        const dataDirective = c().dataDirective;
-        if (dataDirective === undefined) {
+        await compileComponents2();
+        const v = c().dataDirective;
+        if (v === undefined) {
           throw new Error('dataDirective is undefined');
         }
-        dataDirective.top = { index: 0, name: 'not undefined 0' };
-        dataDirective.bottom = { index: 999, name: 'not undefined 999' };
-        spyOnProperty(dataDirective, 'length').and.returnValue(100);
+        dataDirective = v;
+      });
+
+      it('DataDirective.top === undefined', () => {
+        dataDirective.top = undefined;
+        dataDirective.bottom = { index: 10, name: 'data-10' };
+        c().saveScrollPosition();
+        expect(spyCursorStoreServiceSave.calls.count()).toBe(0);
+      });
+
+      it('DataDirective.bottom === undefined', () => {
+        dataDirective.top = { index: 0, name: 'data-0' };
+        dataDirective.bottom = undefined;
+        c().saveScrollPosition();
+        expect(spyCursorStoreServiceSave.calls.count()).toBe(0);
+      });
+
+      it('DataDirective.bottom and top are not undefined', () => {
+        dataDirective.top = { index: 0, name: 'data-0' };
+        dataDirective.bottom = { index: 10, name: 'data-10' };
+        spyOnProperty(dataDirective, 'length').and.returnValue(11);
         c().saveScrollPosition();
         expect(spyCursorStoreServiceSave.calls.count()).toBe(1);
         expect(spyCursorStoreServiceSave.calls.argsFor(0)).toEqual([
           'test',
-          new TestDataCursor(dataDirective.bottom as TestData),
-          new TestDataCursor(dataDirective.top as TestData),
-          100,
+          new TestDataCursor({ index: 10, name: 'data-10' }),
+          new TestDataCursor({ index: 0, name: 'data-0' }),
+          11,
           0,
         ]);
       });
     });
-
     describe('fetchBottom', () => {
+      let dataDirective: MugenScrollDataDirective;
       beforeEach(async () => {
-        await compileComponents();
+        data = [
+          { index: 0, name: `id-0` },
+          { index: 1, name: `id-1` },
+          { index: 2, name: `id-2` },
+          { index: 3, name: `id-3` },
+          { index: 4, name: `id-4` },
+          { index: 5, name: `id-5` },
+          { index: 6, name: `id-6` },
+          { index: 7, name: `id-7` },
+          { index: 8, name: `id-8` },
+          { index: 9, name: `id-9` },
+        ];
+        spyProviderFetchBottom = spyOn(mockProvider, 'fetchBottom').and.resolveTo(data);
+        await compileComponents2();
+        const v = c().dataDirective;
+        if (v === undefined) {
+          throw new Error('dataDirective is undefined');
+        }
+        dataDirective = v;
+        spyScrollBottomAt = spyOn(c(), 'scrollBottomAt');
       });
-
-      it('dataDirective is undefined', async () => {
+      it('dataDirective.bottom is undefined', async () => {
+        dataDirective.bottom = undefined;
         await c().fetchBottom();
+        expect(spyProviderFetchBottom.calls.count()).toBe(0);
+        expect(spyScrollBottomAt.calls.count()).toBe(0);
+      });
+      it('dataDirective.bottom is not undefined', async () => {
+        dataDirective.bottom = { index: -1, name: 'id--1' };
+        await c().fetchBottom();
+        expect(spyProviderFetchBottom.calls.count()).toBe(1);
+        expect(spyProviderFetchBottom.calls.argsFor(0)).toEqual([
+          new TestDataCursor({ index: -1, name: 'id--1' }),
+          c().countPerLoad,
+          false,
+        ]);
+        expect(spyScrollBottomAt.calls.count()).toBe(1);
+        expect(spyScrollBottomAt.calls.argsFor(0)).toEqual([
+          { index: -1, name: 'id--1' },
+        ]);
+      });
+    });
+    describe('fetchTop', () => {
+      let dataDirective: MugenScrollDataDirective;
+      beforeEach(async () => {
+        data = [
+          { index: 0, name: `id-0` },
+          { index: 1, name: `id-1` },
+          { index: 2, name: `id-2` },
+          { index: 3, name: `id-3` },
+          { index: 4, name: `id-4` },
+          { index: 5, name: `id-5` },
+          { index: 6, name: `id-6` },
+          { index: 7, name: `id-7` },
+          { index: 8, name: `id-8` },
+          { index: 9, name: `id-9` },
+        ];
+        spyProviderFetchTop = spyOn(mockProvider, 'fetchTop').and.resolveTo(data);
+        await compileComponents2();
+        const v = c().dataDirective;
+        if (v === undefined) {
+          throw new Error('dataDirective is undefined');
+        }
+        dataDirective = v;
+        spyScrollTopAt = spyOn(c(), 'scrollTopAt');
+      });
+      it('dataDirective.top is undefined', async () => {
+        dataDirective.top = undefined;
+        await c().fetchTop();
+        expect(spyProviderFetchTop.calls.count()).toBe(0);
+        expect(spyScrollTopAt.calls.count()).toBe(0);
+      });
+      it('dataDirective.top is not undefined', async () => {
+        dataDirective.top = { index: -1, name: 'id--1' };
+        await c().fetchTop();
+        expect(spyProviderFetchTop.calls.count()).toBe(1);
+        expect(spyProviderFetchTop.calls.argsFor(0)).toEqual([
+          { index: -1, name: 'id--1' },
+          c().countPerLoad,
+          false,
+        ]);
+        expect(spyScrollTopAt.calls.count()).toBe(1);
+        expect(spyScrollTopAt.calls.argsFor(0)).toEqual([
+          { index: -1, name: 'id--1' },
+        ]);
       });
     });
   });
