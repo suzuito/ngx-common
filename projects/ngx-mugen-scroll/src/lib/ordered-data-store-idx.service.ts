@@ -202,6 +202,7 @@ export class OrderedDataStoreIdxService {
     n: number,
     includeEqual: boolean = false,
     end: Cursor | null = null,
+    order: 'asc' | 'desc' = 'asc',
   ): Promise<Array<T>> {
     let range = IDBKeyRange.lowerBound(current.getItems(), !includeEqual);
     if (end) {
@@ -219,6 +220,7 @@ export class OrderedDataStoreIdxService {
       range,
       'next',
       n,
+      order,
     );
   }
 
@@ -229,6 +231,7 @@ export class OrderedDataStoreIdxService {
     n: number,
     includeEqual: boolean = false,
     end: Cursor | null = null,
+    order: 'asc' | 'desc' = 'asc',
   ): Promise<Array<T>> {
     let range = IDBKeyRange.upperBound(current.getItems(), !includeEqual);
     if (end) {
@@ -246,6 +249,7 @@ export class OrderedDataStoreIdxService {
       range,
       'prev',
       n,
+      order,
     );
   }
 
@@ -256,6 +260,7 @@ export class OrderedDataStoreIdxService {
     range: IDBKeyRange,
     direction: 'next' | 'prev',
     n: number,
+    order: 'asc' | 'desc' = 'asc',
   ): Promise<Array<T>> {
     // console.log(`Fetch ${storeName}.${indexName} at ${current.toString()}`);
     // console.log(`From ${range.lower} to ${range.upper} sort ${direction} ${n} from indexed db`);
@@ -269,10 +274,16 @@ export class OrderedDataStoreIdxService {
         const cursor: IDBCursorWithValue = (ev.target as any).result;
         if (!cursor) {
           // EOF
+          if (order === 'desc') {
+            ret.reverse();
+          }
           resolve(ret);
           return;
         }
         if (i >= n) {
+          if (order === 'desc') {
+            ret.reverse();
+          }
           resolve(ret);
           return;
         }
