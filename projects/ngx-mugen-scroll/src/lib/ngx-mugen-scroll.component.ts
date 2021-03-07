@@ -194,12 +194,22 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
   }
 
   /**
+   * Whether is loading or not
+   */
+  private isLoadingInternal: boolean;
+
+  get isLoading(): boolean {
+    return this.isLoadingInternal;
+  }
+
+  /**
    * @ignore
    */
   constructor(
     public el: ElementRef,
     private cursorStoreService: CursorStoreService,
   ) {
+    this.isLoadingInternal = false;
     this.scrollBottomOnInit = false;
     this.countPerLoad = 10;
     this.bottom = new EventEmitter<ScrollBottomEvent>();
@@ -246,6 +256,9 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * Initialize stream. This method is also called in `ngAfterViewInit`.
    */
   async init(): Promise<void> {
+    if (this.isLoadingInternal === true) {
+      return;
+    }
     this._dataDirective.max = this.countPerLoad * 3;
     // Clear previous state
     this._dataDirective.clear();
@@ -266,23 +279,28 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     this.intersectionObserver.observe(this._bottomDirective.element);
     this.intersectionObserver.observe(this._topDirective.element);
     // Load data
-    let datas = [];
-    if (this.autoLoadScrollPosition) {
-      const cursorStoreInfo = this.cursorStoreService.load(this._provider.scrollId);
-      if (cursorStoreInfo !== undefined) {
-        datas = await this._provider.fetchOnLoad(cursorStoreInfo);
-        this.push(...datas);
-        this.element.scroll(0, cursorStoreInfo.scrollY);
+    try {
+      this.isLoadingInternal = true;
+      let datas = [];
+      if (this.autoLoadScrollPosition) {
+        const cursorStoreInfo = this.cursorStoreService.load(this._provider.scrollId);
+        if (cursorStoreInfo !== undefined) {
+          datas = await this._provider.fetchOnLoad(cursorStoreInfo);
+          this.push(...datas);
+          this.element.scroll(0, cursorStoreInfo.scrollY);
+          return;
+        }
+      }
+      datas = await this._provider.fetchOnInit(this.countPerLoad);
+      this.push(...datas);
+      if (this.scrollBottomOnInit) {
+        this.scrollBottom();
         return;
       }
+      this.scrollTop();
+    } finally {
+      this.isLoadingInternal = false;
     }
-    datas = await this._provider.fetchOnInit(this.countPerLoad);
-    this.push(...datas);
-    if (this.scrollBottomOnInit) {
-      this.scrollBottom();
-      return;
-    }
-    this.scrollTop();
   }
 
   private setCountPerLoad(): void {
@@ -319,16 +337,27 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * The data is provided by `fetchBottom` method of the `provider`.
    */
   async fetchBottom(): Promise<void> {
+    if (this.isLoadingInternal === true) {
+      return;
+    }
     if (this._dataDirective.bottom === undefined) {
       return;
     }
-    const datas = await this._provider.fetchBottom(
-      this._provider.newCursor(this._dataDirective.bottom),
-      this.countPerLoad,
-      false,
-    );
-    const bottomBeforeAdded = this._dataDirective.bottom;
-    this.push(...datas);
+
+    let bottomBeforeAdded: object;
+    try {
+      this.isLoadingInternal = true;
+      const datas = await this._provider.fetchBottom(
+        this._provider.newCursor(this._dataDirective.bottom),
+        this.countPerLoad,
+        false,
+      );
+      bottomBeforeAdded = this._dataDirective.bottom;
+      this.push(...datas);
+    } catch (err) {
+      this.isLoadingInternal = false;
+      throw err;
+    }
 
     return new Promise((resolve, reject) => {
       try {
@@ -338,6 +367,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
         reject(err);
+      } finally {
+        this.isLoadingInternal = false;
       }
     });
   }
@@ -347,16 +378,26 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * The data is provided by `fetchTop` method of the `provider`.
    */
   async fetchTop(): Promise<void> {
+    if (this.isLoadingInternal === true) {
+      return;
+    }
     if (this._dataDirective.top === undefined) {
       return;
     }
-    const datas = await this._provider.fetchTop(
-      this._provider.newCursor(this._dataDirective.top),
-      this.countPerLoad,
-      false,
-    );
-    const topBeforeAdded = this._dataDirective.top;
-    this.unshift(...datas);
+
+    let topBeforeAdded: object;
+    try {
+      const datas = await this._provider.fetchTop(
+        this._provider.newCursor(this._dataDirective.top),
+        this.countPerLoad,
+        false,
+      );
+      topBeforeAdded = this._dataDirective.top;
+      this.unshift(...datas);
+    } catch (err) {
+      this.isLoadingInternal = false;
+      throw err;
+    }
 
     return new Promise((resolve, reject) => {
       try {
@@ -366,6 +407,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
         }, this.timeoutMillisecondsAfterBinding);
       } catch (err) {
         reject(err);
+      } finally {
+        this.isLoadingInternal = false;
       }
     });
   }
