@@ -24,6 +24,12 @@ class NullLogger implements Logger {
   info(...msgs: Array<string>): void { }
 }
 
+class ConsoleLogger implements Logger {
+  info(...msgs: Array<string>): void {
+    console.log(...msgs);
+  }
+}
+
 function callbackIntersectionObserver(component: NgxMugenScrollComponent): IntersectionObserverCallback {
   return (entities: Array<IntersectionObserverEntry>): void => {
     entities.forEach(entity => {
@@ -169,14 +175,19 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
    * Logger for debug
    */
   @Input()
-  public logger: Logger;
+  public logger: 'null' | 'console';
+  public loggerInternal: Logger;
 
   /**
    * @ignore
    */
   public intersectionObserver: IntersectionObserver | undefined;
 
-  private timeoutMillisecondsAfterBinding: number;
+  /**
+   * Milliseconds after binding data to component
+   */
+  @Input()
+  public timeoutMillisecondsAfterBinding: number;
 
   /**
    * @ignore
@@ -218,7 +229,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     this.autoFetchingTop = true;
     this.autoLoadScrollPosition = true;
     this.timeoutMillisecondsAfterBinding = 1;
-    this.logger = new NullLogger();
+    this.logger = 'null';
+    this.loggerInternal = new NullLogger();
     this.countPerLoadMode = 'small';
     this.autoInitAfterViewInit = true;
     this.newIntersectionObserver = (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined) => {
@@ -359,6 +371,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       throw err;
     }
 
+    this.info(`Wait ${this.timeoutMillisecondsAfterBinding} ms for waiting`);
+
     return new Promise((resolve, reject) => {
       try {
         setTimeout(() => {
@@ -398,6 +412,8 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       this.isLoadingInternal = false;
       throw err;
     }
+
+    this.info(`Wait ${this.timeoutMillisecondsAfterBinding} ms for waiting`);
 
     return new Promise((resolve, reject) => {
       try {
@@ -439,6 +455,7 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
       }
       s += u.offsetHeight;
     }
+    this.info(`Scroll (${0}, ${s})`);
     this.element.scroll(0, s);
   }
 
@@ -477,15 +494,15 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     logs.push({ element: u, offsetHeight: u.offsetHeight });
     s += this._bottomDirective.element.offsetHeight;
     logs.push({ element: this._bottomDirective.element, offsetHeight: this._bottomDirective.element.offsetHeight });
+    this.info(`Scroll (${0}, ${s})`);
     this.element.scroll(0, s);
-    this.info(`scroll: ${s}`);
   }
 
   private info(...msgs: Array<string>): void {
-    if (this.logger === undefined) {
+    if (this.loggerInternal === undefined) {
       return;
     }
-    this.logger.info(...msgs);
+    this.loggerInternal.info(...msgs);
   }
 
   /**
