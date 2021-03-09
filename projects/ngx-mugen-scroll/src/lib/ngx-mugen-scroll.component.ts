@@ -429,6 +429,14 @@ export class NgxMugenScrollComponent implements OnInit, AfterViewInit, OnChanges
     });
   }
 
+  getPrevData(data: object): object | undefined {
+    return this._dataDirective.getPrevData(data);
+  }
+
+  getNextData(data: object): object | undefined {
+    return this._dataDirective.getNextData(data);
+  }
+
   /**
    * @ignore
    */
