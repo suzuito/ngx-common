@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Directive, ElementRef, EmbeddedViewRef, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Cursor } from './cursor';
 
@@ -11,6 +12,7 @@ interface Ctx {
 export class MugenScrollDataDirective {
 
   private datasMap: Map<string, object>;
+  private viewRefsMap: Map<string, EmbeddedViewRef<object>>;
 
   /**
    * @ignore
@@ -40,6 +42,7 @@ export class MugenScrollDataDirective {
     private viewContainer: ViewContainerRef,
   ) {
     this.datasMap = new Map<string, object>();
+    this.viewRefsMap = new Map<string, EmbeddedViewRef<object>>();
     this.max = 30;
     this.newCursor = (v: object) => new Cursor([v.toString()]);
   }
@@ -52,6 +55,7 @@ export class MugenScrollDataDirective {
     this.top = undefined;
     this.bottom = undefined;
     this.datasMap.clear();
+    this.viewRefsMap.clear();
   }
 
   /**
@@ -78,6 +82,7 @@ export class MugenScrollDataDirective {
       r.rootNodes[0].setAttribute('_cursor', this.newCursor(data));
       r.detectChanges(); // Wait until data is attached???
       this.datasMap.set(cursor.toString(), data);
+      this.viewRefsMap.set(cursor.toString(), r);
       this.bottom = data;
     });
   }
@@ -99,6 +104,7 @@ export class MugenScrollDataDirective {
       r.rootNodes[0].setAttribute('_cursor', this.newCursor(data));
       r.detectChanges(); // Wait until data is attached???
       this.datasMap.set(cursor.toString(), data);
+      this.viewRefsMap.set(cursor.toString(), r);
       this.top = data;
     });
   }
@@ -113,6 +119,7 @@ export class MugenScrollDataDirective {
       if (this.top) {
         const cursor = this.newCursor(this.top);
         this.datasMap.delete(cursor.toString());
+        this.viewRefsMap.delete(cursor.toString());
       }
       const ref = this.viewContainer.get(0);
       if (ref === null) {
@@ -136,6 +143,7 @@ export class MugenScrollDataDirective {
       if (this.bottom) {
         const cursor = this.newCursor(this.bottom);
         this.datasMap.delete(cursor.toString());
+        this.viewRefsMap.delete(cursor.toString());
       }
       j = this.viewContainer.length - 1;
       const ref = this.viewContainer.get(j);
@@ -146,6 +154,38 @@ export class MugenScrollDataDirective {
       const ctx = vref.context as Ctx;
       this.bottom = ctx.data;
     }
+  }
+
+  public getPrevData(data: object): object | undefined {
+    const v = this.viewRefsMap.get(this.newCursor(data).toString());
+    if (!v) {
+      return undefined;
+    }
+    const i = this.viewContainer.indexOf(v);
+    if (i <= 0) {
+      return undefined;
+    }
+    const u = this.viewContainer.get(i - 1);
+    if (!u) {
+      return undefined;
+    }
+    return ((u as EmbeddedViewRef<object>).context as any).data;
+  }
+
+  public getNextData(data: object): object | undefined {
+    const v = this.viewRefsMap.get(this.newCursor(data).toString());
+    if (!v) {
+      return undefined;
+    }
+    const i = this.viewContainer.indexOf(v);
+    if (i >= this.viewContainer.length) {
+      return undefined;
+    }
+    const u = this.viewContainer.get(i + 1);
+    if (!u) {
+      return undefined;
+    }
+    return ((u as EmbeddedViewRef<object>).context as any).data;
   }
 
 }
