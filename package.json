@@ -4,15 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start-demo1": "ng serve demo1 --host 0.0.0.0",
-    "build-lib": "ng build ngx-mugen-scroll --watch",
-    "build-dist": "ng build ngx-mugen-scroll --prod",
-    "test-ci": "ng test ngx-mugen-scroll --watch=false --browsers=ChromeHeadlessCustom --code-coverage",
-    "test-lib": "ng test ngx-mugen-scroll --watch=true --browsers=ChromeHeadlessCustom --code-coverage",
-    "test": "ng test ngx-mugen-scroll",
+    "ngx-mugen-scroll-build-lib": "ng build ngx-mugen-scroll --watch",
+    "ngx-mugen-scroll-build-dist": "ng build ngx-mugen-scroll --prod",
+    "ngx-mugen-scroll-test-ci": "ng test ngx-mugen-scroll --watch=false --browsers=ChromeHeadlessCustom --code-coverage",
+    "ngx-mugen-scroll-test-lib": "ng test ngx-mugen-scroll --watch=true --browsers=ChromeHeadlessCustom --code-coverage",
+    "ngx-mugen-scroll-build-docs": "rm -rf docs && cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
+    "ngx-mugen-scroll-start-docs": "cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d .served-docs -s -r 4201 -w src",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "build-docs": "rm -rf docs && cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
-    "start-docs": "cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d .served-docs -s -r 4201 -w src"
+    "e2e": "ng e2e"
   },
   "dependencies": {
     "@angular/animations": "~11.0.0",
