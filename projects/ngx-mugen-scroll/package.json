@@ -9,13 +9,13 @@
     "tslib": "^2.0.0"
   },
   "license": "MIT",
-  "homepage": "https://github.com/suzuito/ngx-mugen-scroll/blob/main/projects/ngx-mugen-scroll/README.md",
+  "homepage": "https://github.com/suzuito/ngx-common/blob/main/projects/ngx-mugen-scroll/README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suzuito/ngx-mugen-scroll.git"
+    "url": "git+https://github.com/suzuito/ngx-common.git"
   },
   "bugs": {
-    "url": "https://github.com/suzuito/ngx-mugen-scroll/issues"
+    "url": "https://github.com/suzuito/ngx-common/issues"
   },
   "keywords": [
     "angular",
