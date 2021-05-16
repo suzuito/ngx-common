@@ -10,6 +10,7 @@ import { TopComponent } from './top/top.component';
 import { Demo2Component } from './demo2/demo2.component';
 import { LoggerComponent } from './logger/logger.component';
 import { Debug1Component } from './debug1/debug1.component';
+import { Demo3Component } from './demo3/demo3.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { Debug1Component } from './debug1/debug1.component';
     Demo2Component,
     LoggerComponent,
     Debug1Component,
+    Demo3Component,
   ],
   imports: [
     BrowserModule,
