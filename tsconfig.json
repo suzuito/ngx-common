@@ -29,6 +29,10 @@
       "mugen-scroll": [
         "dist/mugen-scroll/mugen-scroll",
         "dist/mugen-scroll"
+      ],
+      "ngx-common": [
+        "dist/ngx-common/ngx-common",
+        "dist/ngx-common"
       ]
     }
   },
