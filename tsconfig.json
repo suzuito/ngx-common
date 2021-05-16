@@ -22,17 +22,11 @@
     "paths": {
       "ngx-mugen-scroll": [
         "dist/ngx-mugen-scroll/ngx-mugen-scroll",
-        "dist/ngx-mugen-scroll",
-        "dist/ngx-mugen-scroll/ngx-mugen-scroll",
         "dist/ngx-mugen-scroll"
       ],
       "mugen-scroll": [
         "dist/mugen-scroll/mugen-scroll",
         "dist/mugen-scroll"
-      ],
-      "ngx-common": [
-        "dist/ngx-common/ngx-common",
-        "dist/ngx-common"
       ]
     }
   },
