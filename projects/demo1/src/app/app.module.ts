@@ -11,6 +11,7 @@ import { Demo2Component } from './demo2/demo2.component';
 import { LoggerComponent } from './logger/logger.component';
 import { Debug1Component } from './debug1/debug1.component';
 import { Demo3Component } from './demo3/demo3.component';
+import { NgxGeojsonGlobeViewerModule } from 'projects/ngx-geojson-globe-viewer/src/public-api';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { Demo3Component } from './demo3/demo3.component';
     BrowserModule,
     AppRoutingModule,
     NgxMugenScrollModule,
+    NgxGeojsonGlobeViewerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

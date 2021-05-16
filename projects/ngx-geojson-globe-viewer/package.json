@@ -6,6 +6,8 @@
     "@angular/core": "^11.0.9"
   },
   "dependencies": {
+    "@types/d3": "^6.3.0",
+    "d3": "^6.7.0",
     "tslib": "^2.0.0"
   }
 }
