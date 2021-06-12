@@ -149,7 +149,7 @@ export class NgxGeojsonGlobeViewerComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  inputScale(event: InputEvent): void {
+  inputScale(event: Event): void {
     this.projectionScale = (event.target as any).value;
     this.projection.scale(this.projectionScale);
     this.redisplay();
