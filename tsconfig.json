@@ -22,13 +22,15 @@
     "paths": {
       "ngx-mugen-scroll": [
         "dist/ngx-mugen-scroll/ngx-mugen-scroll",
-        "dist/ngx-mugen-scroll",
-        "dist/ngx-mugen-scroll/ngx-mugen-scroll",
         "dist/ngx-mugen-scroll"
       ],
       "mugen-scroll": [
         "dist/mugen-scroll/mugen-scroll",
         "dist/mugen-scroll"
+      ],
+      "ngx-geojson-globe-viewer": [
+        "dist/ngx-geojson-globe-viewer/ngx-geojson-globe-viewer",
+        "dist/ngx-geojson-globe-viewer"
       ]
     }
   },

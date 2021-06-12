@@ -1,4 +1,5 @@
-<lib-ngx-mugen-scroll #mugenScroll1 class='stream1' [provider]='provider1' [logger]='logger' countPerLoadMode='middle'>
+<lib-ngx-mugen-scroll #mugenScroll1 class='stream1' [provider]='provider1' [logger]='"console"'
+    countPerLoadMode='middle'>
     <div libMugenScrollTop class='top1'></div>
     <div *libMugenScrollData='let data = data' class='data1'>
         <div>{{data.index}}</div>
@@ -8,7 +9,7 @@
 </lib-ngx-mugen-scroll>
 
 <lib-ngx-mugen-scroll #mugenScroll2 class='stream2' [provider]='provider2' [autoFetchingBottom]='false'
-    [autoFetchingTop]='false' [logger]='logger' [timeoutMillisecondsAfterBinding]='10'>
+    [autoFetchingTop]='false' [logger]='"console"' [timeoutMillisecondsAfterBinding]='10'>
     <div libMugenScrollTop class='top1'>
         <button (click)='clickReadMoreTop2()'>Read more ...</button>
     </div>

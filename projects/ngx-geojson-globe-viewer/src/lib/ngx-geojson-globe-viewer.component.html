@@ -1,0 +1,10 @@
+<div class='main' [style.width]='width+"px"' [style.height]='height+"px"'>
+    <svg (click)='clickSVG($event)' (wheel)='wheelSVG($event)' #main xmlns='http://www.w3.org/2000/svg'>
+        <path #pathGraticule stroke="#ccc" fill="none"></path>
+        <path #pathLand1 stroke="#000" fill="none"></path>
+        <path #pathData class='data' stroke="#f00" fill="none"></path>
+    </svg>
+    <div class='operator'>
+        <input type='range' min='100' max='1000' step='10' [value]='projectionScale' (change)='inputScale($event)'>
+    </div>
+</div>

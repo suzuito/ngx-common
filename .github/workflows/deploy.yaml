@@ -15,4 +15,4 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm run build-dist && cd dist/ngx-mugen-scroll && npm publish
+      - run: npm run ngx-mugen-scroll-build-dist && cd dist/ngx-mugen-scroll && npm publish

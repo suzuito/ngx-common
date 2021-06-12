@@ -18,7 +18,7 @@ Test library on demo* application.
 
 ```bash
 # A terminal
-npm run build-lib
+npm run ngx-mugen-scroll-build-lib
 # Another terminal
 npm run start-demo1
 ```
@@ -26,17 +26,17 @@ npm run start-demo1
 ### Unit test
 
 ```bash
-npm run test-lib
+npm run ngx-mugen-scroll-test-lib
 ```
 
 ### Doc
 
 ```bash
-npm run start-docs
+npm run ngx-mugen-scroll-start-docs
 ```
 
 ### Publish
 
 ```bash
-npm run build-dist && cd dist/ngx-mugen-scroll && npm publish --tag beta
+npm run ngx-mugen-scroll-build-dist && cd dist/ngx-mugen-scroll && npm publish --tag beta
 ```
