@@ -11,15 +11,15 @@ export class Demo3Component implements OnInit {
 
   constructor() {
     this.data1 = {
-      "type": "FeatureCollection",
-      "bbox": [127.7025, 43.2203, 142.8635, 26.1202],
-      "features": [
+      type: 'FeatureCollection',
+      bbox: [127.7025, 43.2203, 142.8635, 26.1202],
+      features: [
         {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
               [
                 [
                   32.607421875,
@@ -46,11 +46,11 @@ export class Demo3Component implements OnInit {
           }
         },
         {
-          "type": "Feature",
-          "properties": {},
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
               [
                 [
                   139.65352535247803,

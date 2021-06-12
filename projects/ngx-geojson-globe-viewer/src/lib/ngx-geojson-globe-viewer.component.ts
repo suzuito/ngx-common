@@ -71,7 +71,7 @@ export class NgxGeojsonGlobeViewerComponent implements OnInit, AfterViewInit, On
   ngOnDestroy(): void {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.edgeLength) {
       this.width = changes.edgeLength.currentValue;
       this.height = changes.edgeLength.currentValue;
