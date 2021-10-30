@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/projects/demo1"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/projects/ngx-geojson-globe-viewer"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/projects/ngx-mugen-scroll"
+    schedule:
+      interval: "daily"
