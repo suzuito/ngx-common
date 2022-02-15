@@ -10,7 +10,6 @@
     "ngx-mugen-scroll-test-lib": "ng test ngx-mugen-scroll --watch=true --browsers=ChromeHeadlessCustom --code-coverage",
     "ngx-mugen-scroll-build-docs": "rm -rf docs && cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d docs src && mv docs ../../",
     "ngx-mugen-scroll-start-docs": "cd projects/ngx-mugen-scroll && npx compodoc -c ./.compodocrc -d .served-docs -s -r 4201 -w src",
-    "lint": "ng lint",
     "e2e": "ng e2e"
   },
   "dependencies": {

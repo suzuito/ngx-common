@@ -9,5 +9,4 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: npm install
-      - run: npm run lint
       - run: npm run ngx-mugen-scroll-test-ci
