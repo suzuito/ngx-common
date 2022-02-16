@@ -46,3 +46,4 @@ testem.log
 Thumbs.db
 
 .served-docs
+.angular

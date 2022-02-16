@@ -112,7 +112,7 @@ export class OrderedDataStoreIdxService {
 
   async get<T>(
     storeName: string,
-    query: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    query: IDBKeyRange | IDBValidKey,
     index: string = '',
   ): Promise<T | undefined> {
     return new Promise<T>((resolve, reject) => {
@@ -137,7 +137,7 @@ export class OrderedDataStoreIdxService {
 
   async delete(
     storeName: string,
-    key: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange,
+    key: IDBKeyRange | IDBValidKey,
     index: string = '',
   ): Promise<void> {
     const db = this.validDB();
